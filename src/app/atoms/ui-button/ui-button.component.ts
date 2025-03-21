@@ -1,7 +1,10 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ElementRef, OnInit, inject, DestroyRef } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { NavButton } from '../../shared/types/nav-button.model';
+import { select, selectAll, transition } from 'd3';
+import { Subject, debounceTime } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'ui-button',
@@ -11,7 +14,7 @@ import { NavButton } from '../../shared/types/nav-button.model';
     styleUrl: './ui-button.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UiButtonComponent {
+export class UiButtonComponent implements OnInit {
     @Input({required: true})
     public label!: string;
 
@@ -30,19 +33,72 @@ export class UiButtonComponent {
     @Output()
     public buttonClicked: EventEmitter<NavButton> = new EventEmitter();
 
+    private labelUpdate$ = new Subject<boolean>();
+    private readonly destroyRef = inject(DestroyRef);
+
+    private labelContainer!: any;
+    private letterSpans!: any;
+
+    private readonly letterAppearDelayMillis: number = 30;
+    private readonly letterDisappearDelayMillis: number = 25;
+
+    public constructor(private readonly elementRef: ElementRef) {}
+
+    public ngOnInit(): void {
+        this.labelUpdate$.pipe(
+            debounceTime(this.getMaxTransitionDelay()),
+            takeUntilDestroyed(this.destroyRef),
+        ).subscribe((show: boolean) => this.updateLabelText(show))
+    }
+
     public onMouseEnter(): void {
-        if (this.showLabelOnHover) {
-            this.hideLabel = false;
-        }
+        this.labelUpdate$.next(true);
     }
 
     public onMouseLeave(): void {
-        if (this.showLabelOnHover) {
-            this.hideLabel = true;
-        }
+        this.labelUpdate$.next(false);
     }
 
     public onClick(): void {
         this.buttonClicked.emit();
+    }
+
+    private updateLabelText(show: boolean): void {
+        const letters: string[] = show
+            ? this.label.split('')
+            : [];
+
+        this.labelContainer = select(this.elementRef.nativeElement)
+            .selectAll('.ui-button__label-container')
+            .data([letters]);
+
+        this.letterSpans = this.labelContainer.selectAll('span')
+            .data((d: string[]) => d, (d: string[], i: number) => `${d}-${i}`)
+
+        this.letterSpans.enter()
+            .append('span')
+            .text((d: string) => d)
+            .style('opacity', 0)
+            .style('display', 'none')
+            .transition('enter')
+            .delay((d: string, i: number) => i * this.letterAppearDelayMillis)
+            .style('opacity', 1)
+            .style('display', 'inline-block')
+        
+        this.letterSpans
+            .transition()
+            .text((d: string) => d)
+            .style('opacity', 1)
+
+        this.letterSpans.exit()
+            .transition()
+            // .delay((d: string, i: number, arr: any[]) => (arr.length - i - 1) * letterDisappearDelayMillis)
+            .delay((d: string, i: number, arr: any[]) => (i - 1) * this.letterDisappearDelayMillis)
+            .style('opacity', 0)
+            .remove();
+    }
+    
+    private getMaxTransitionDelay(): number {
+        return this.label.length * Math.max(this.letterAppearDelayMillis, this.letterDisappearDelayMillis);
     }
 }
