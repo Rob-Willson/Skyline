@@ -39,14 +39,14 @@ export class UiButtonComponent implements OnInit {
     private labelContainer!: any;
     private letterSpans!: any;
 
-    private readonly letterAppearDelayMillis: number = 30;
-    private readonly letterDisappearDelayMillis: number = 25;
+    private readonly labelAppearDelayMillis: number = 150;
+    private readonly labelDisappearDelayMillis: number = 110;
 
     public constructor(private readonly elementRef: ElementRef) {}
 
     public ngOnInit(): void {
         this.labelUpdate$.pipe(
-            debounceTime(this.getMaxTransitionDelay()),
+            debounceTime(Math.max(this.labelAppearDelayMillis, this.labelDisappearDelayMillis)),
             takeUntilDestroyed(this.destroyRef),
         ).subscribe((show: boolean) => this.updateLabelText(show))
     }
@@ -81,7 +81,7 @@ export class UiButtonComponent implements OnInit {
             .style('opacity', 0)
             .style('display', 'none')
             .transition('enter')
-            .delay((d: string, i: number) => i * this.letterAppearDelayMillis)
+            .delay((d: string, i: number, arr: unknown[]) => i * (this.labelAppearDelayMillis / arr.length))
             .style('opacity', 1)
             .style('display', 'inline-block')
         
@@ -92,13 +92,8 @@ export class UiButtonComponent implements OnInit {
 
         this.letterSpans.exit()
             .transition()
-            // .delay((d: string, i: number, arr: any[]) => (arr.length - i - 1) * letterDisappearDelayMillis)
-            .delay((d: string, i: number, arr: any[]) => (i - 1) * this.letterDisappearDelayMillis)
+            .delay((d: string, i: number, arr: unknown[]) => (arr.length - i - 1) * (this.labelDisappearDelayMillis / arr.length))
             .style('opacity', 0)
             .remove();
-    }
-    
-    private getMaxTransitionDelay(): number {
-        return this.label.length * Math.max(this.letterAppearDelayMillis, this.letterDisappearDelayMillis);
     }
 }
