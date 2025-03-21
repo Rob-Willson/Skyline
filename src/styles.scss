@@ -1,1 +1,73 @@
-/* You can add global styles to this file, and also import other style files */
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$azure-palette,
+      tertiary: mat.$blue-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}:root {
+    // BACKGROUNDS
+    --body-background-color: rgb(26, 28, 30);
+
+    // TEXT
+    --text-color: rgb(245, 245, 245);
+    --text-color--highlight: rgb(245, 245, 245);
+    --paragraph-font-size: 0.9rem;
+
+    // BORDERS
+    --border-width: 2px;
+    --border-radius: 4px;
+    --border-color: transparent;
+    --border-color--highlight: rgba(255, 255, 255, 0.5);
+
+    // BUTTONS
+    --button-text-color: rgba(245, 245, 245, 0.7);
+    --button-text-color--highlight: rgba(245, 245, 245, 1.0);
+
+    // TRANSITIONS
+    --transition-speed-fast: 0.2s;
+
+    // Z-INDEX
+    --z-index--floating-nav-element: 10;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--body-background-color);
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+body {
+    color: rgb(233, 206, 119);
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    font-weight: 400;
+}
+
+h1 {
+    font-weight: 400;
+    font-size: 2rem;
+}
+
+h2 {
+    font-weight: 400;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
