@@ -1,4 +1,7 @@
 .ui-button {
+    display: flex;
+    align-items: center;
+    gap: 4px;
     background: none;
     padding: 6px 12px;
     border: var(--border-width) solid var(--border-color);
@@ -9,6 +12,7 @@
     text-decoration: none;
 
     transition:
+        width 2s ease,
         color var(--transition-speed-fast) ease-in-out,
         border-color var(--transition-speed-fast) ease-in-out;
 
@@ -16,5 +20,9 @@
         text-decoration: none;
         color: var(--button-text-color--highlight);
         border-color: var(--border-color--highlight);
+    }
+
+    &__icon {
+        font-size: var(--button-icon-font-size);
     }
 }

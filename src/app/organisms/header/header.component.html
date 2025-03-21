@@ -5,6 +5,14 @@
     </div>
 
     <nav class="header__nav">
-        <ui-button [label]="'About'"></ui-button>
+        <ui-button
+            *ngFor="let button of navButton$ | async"
+            [label]="button.label"
+            [ariaLabel]="button.ariaLabel"
+            [iconName]="button.iconName"
+            [hideLabel]="button.hideLabel"
+            [showLabelOnHover]="button.showLabelOnHover"
+            (buttonClicked)="navButtonClicked.emit(button)"
+        ></ui-button>
     </nav>
 </header>

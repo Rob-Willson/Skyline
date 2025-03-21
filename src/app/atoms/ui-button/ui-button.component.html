@@ -1,3 +1,10 @@
-<button *ngIf="label" (click)="onClick()" class="ui-button">
-    {{ label }}
+<button (click)="onClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" class="ui-button">
+    <mat-icon
+        *ngIf="iconName"
+        fontIcon="{{iconName}}"
+        class="ui-button__icon"
+        aria-hidden="false"
+    />
+
+    <span *ngIf="!hideLabel">{{ label }}</span>
 </button>
