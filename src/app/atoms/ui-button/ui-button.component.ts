@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ElementRef, OnInit, inject, DestroyRef } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ElementRef, OnInit, inject, DestroyRef, ViewChild } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { NavButton } from '../../shared/types/nav-button.model';
@@ -69,7 +69,7 @@ export class UiButtonComponent implements OnInit {
             : [];
 
         this.labelContainer = select(this.elementRef.nativeElement)
-            .selectAll('.ui-button__label-container')
+            .select('.ui-button__label-container')
             .data([letters]);
 
         this.letterSpans = this.labelContainer.selectAll('span')

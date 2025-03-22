@@ -13,11 +13,13 @@
 
     transition:
         width 2s ease,
+        background-color var(--transition-speed-moderate) ease-in-out,
         color var(--transition-speed-fast) ease-in-out,
         border-color var(--transition-speed-fast) ease-in-out;
 
     &:hover {
         text-decoration: none;
+        background-color: var(--body-background-color);
         color: var(--button-text-color--highlight);
         border-color: var(--border-color--highlight);
     }
