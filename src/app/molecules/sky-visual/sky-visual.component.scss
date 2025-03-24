@@ -32,17 +32,6 @@
 
 .sky-visual {
     &__container {
-        &__horizon-line {
-            stroke: rgb(46, 59, 65);
-            stroke-width: 2px;
-            animation: horizonGlareFadeIn 4s ease-in-out forwards
-        }
-
-        &__horizon-glare {
-            fill: url(#horizon-glare);
-            animation: horizonGlareFadeIn 4s ease-in-out forwards
-        }
-
         &__stars-g {
             &__star-g {
                 &__circle {
@@ -54,6 +43,23 @@
                       starGlimmer 3s ease-in-out 3s infinite;
                 }
             }
+        }
+
+        &__moon-g {
+            &__circle {
+                fill: rgb(168, 180, 184);
+            }
+        }
+
+        &__horizon-line {
+            stroke: rgb(46, 59, 65);
+            stroke-width: 2px;
+            animation: horizonGlareFadeIn 4s ease-in-out forwards
+        }
+
+        &__horizon-glare {
+            fill: url(#horizon-glare);
+            animation: horizonGlareFadeIn 4s ease-in-out forwards
         }
     }
 }

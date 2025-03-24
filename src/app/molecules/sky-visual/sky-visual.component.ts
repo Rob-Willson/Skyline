@@ -27,6 +27,9 @@ export class SkyVisualComponent extends BaseVisualDirective {
     private horizonLine!: any;
     private starsContainer!: any;
     private stars!: any;
+    private sunAndMoonContainer!: any;
+    private moonContainer!: any;
+    private moon!: any;
 
     private readonly horizonPositionFraction: number = 0.666;
 
@@ -47,6 +50,15 @@ export class SkyVisualComponent extends BaseVisualDirective {
         this.defsClipPathRect
             .attr('width', maxDimension)
             .attr('height', horizonPosition);
+
+        this.sunAndMoonContainer
+            .attr('transform', `translate(${maxDimension * 0.5}, ${horizonPosition})`);
+
+        this.moonContainer
+            .attr('transform', `rotate(270) translate(200, 0)`)
+
+        this.moon
+            .attr('r', 40)
 
         this.horizonGlare
             .attr('rx', maxDimension / 2)
@@ -70,8 +82,7 @@ export class SkyVisualComponent extends BaseVisualDirective {
             )
             .join('g')
                 .attr('class', 'sky-visual__container__stars-g__star-g')
-                .attr('transform', (d: PointMagnitude) => `translate (${d.x * maxDimension}, ${d.y * maxDimension})`)
-                // .style('animation-delay', () => `${Math.random() * 2 + 2}s`);
+                .attr('transform', (d: PointMagnitude) => `translate (${d.x * maxDimension}, ${d.y * maxDimension})`);
 
         this.stars.selectAll('circle')
             .data((d: any) => [d])
@@ -120,6 +131,13 @@ export class SkyVisualComponent extends BaseVisualDirective {
         this.starsContainer = this.svg.append('g')
             .attr('class', 'sky-visual__container__stars-g');
 
+        this.sunAndMoonContainer = this.svg.append('g')
+            .attr('class', 'sky-visual__container__sun-and-moon-g');
+        this.moonContainer = this.sunAndMoonContainer.append('g')
+            .attr('class', 'sky-visual__container__moon-g');
+        this.moon = this.moonContainer .append('circle')
+            .attr('class', 'sky-visual__container__moon-g__circle')
+
         this.horizonGlare = this.svg
             .append('ellipse')
             .attr('class', 'sky-visual__container__horizon-glare');
@@ -130,10 +148,16 @@ export class SkyVisualComponent extends BaseVisualDirective {
 
         timer((elapsed) => {
             const maxDimension = this.getMaxDimension();
+
             const cx = maxDimension * 0.5;
             const cy = maxDimension * this.horizonPositionFraction;
-            const angle = (elapsed * 0.001) % 360;
-            this.starsContainer.attr('transform', `rotate(${angle}, ${cx}, ${cy})`);
+            const starsRotationAngle = (elapsed * 0.001) % 360;
+            this.starsContainer
+                .attr('transform', `rotate(${starsRotationAngle}, ${cx}, ${cy})`);
+
+            const moonRotationAngle = (elapsed * 0.005) % 360;
+            this.moonContainer
+                .attr('transform', `rotate(${moonRotationAngle}) translate(-${maxDimension * 0.25}, ${maxDimension * 0.25})`)
         });
     }
 
