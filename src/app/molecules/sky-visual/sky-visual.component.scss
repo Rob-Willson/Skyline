@@ -43,12 +43,6 @@
             animation: horizonGlareFadeIn 4s ease-in-out forwards
         }
 
-        &__horizon-house-g {
-            &__base, &__roof, &__chimney {
-                fill: var(--body-background-color);
-            }
-        }
-
         &__stars-g {
             &__star-g {
                 &__circle {

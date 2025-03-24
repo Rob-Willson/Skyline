@@ -1,15 +1,15 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ElementRef, ChangeDetectorRef, DestroyRef, inject } from '@angular/core';
-import { NavigationService } from '../../services/navigation.service';
-import { SkyVisualComponent } from "../../organisms/sky-visual/sky-visual.component";
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { SkyVisualComponent } from "../../molecules/sky-visual/sky-visual.component";
 import { PointMagnitude } from '../../shared/types/point.model';
 import { StarsService } from '../../services/stars.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BasePageDirective } from '../base/base-page.directive';
+import { BuildingsVisualComponent } from '../../molecules/buildings-visual/buildings-visual.component';
 
 @Component({
     selector: 'cityscape-page',
     standalone: true,
-    imports: [SkyVisualComponent],
+    imports: [SkyVisualComponent, BuildingsVisualComponent],
     templateUrl: './cityscape-page.component.html',
     styleUrl: './cityscape-page.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

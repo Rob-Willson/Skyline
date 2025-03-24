@@ -1,27 +1,20 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input, OnChanges, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input, ViewEncapsulation } from '@angular/core';
 import { select, timer } from 'd3';
 import { PointMagnitude } from '../../shared/types/point.model';
+import { BaseVisualDirective } from '../base-visual/base-visual.directive';
 
 @Component({
-    selector: 'app-sky-visual',
+    selector: 'sky-visual',
     standalone: true,
     imports: [],
     templateUrl: './sky-visual.component.html',
     styleUrl: './sky-visual.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
-    host: { 'style': 'display: block' },    // Ensure the component behaves as a block element so that it can be styled correctly
-                                            //    without relying on the parent (required due to encapsulation)
 })
-export class SkyVisualComponent implements OnChanges {
+export class SkyVisualComponent extends BaseVisualDirective {
     @Input({required: true})
     public data!: PointMagnitude[];
-
-    @Input({required: true})
-    public width!: number;
-
-    @Input({required: true})
-    public height!: number;
 
     @ViewChild('skyContainerElement', { static: true })
     public skyContainerElement!: ElementRef<HTMLElement>;
@@ -32,25 +25,12 @@ export class SkyVisualComponent implements OnChanges {
     private defsHorizonGlareRadialGradient!: any;
     private horizonGlare!: any;
     private horizonLine!: any;
-    private horizonHouse!: any;
     private starsContainer!: any;
     private stars!: any;
 
     private readonly horizonPositionFraction: number = 0.666;
 
-    public ngOnChanges(changes: SimpleChanges): void {
-        if ((!changes['width'] || !changes['width'].currentValue) && (!changes['height'] || !changes['height'].currentValue)) {
-            return;
-        }
-
-        if (this.width === 0 || this.height === 0) {
-            return;
-        }
-        
-        this.update();
-    }
-
-    private update(): void {
+    protected override update(): void {
         if (!this.svg) {
             this.generateSvg();
         }
@@ -66,7 +46,7 @@ export class SkyVisualComponent implements OnChanges {
 
         this.defsClipPathRect
             .attr('width', maxDimension)
-            .attr('height', horizonPosition)
+            .attr('height', horizonPosition);
 
         this.horizonGlare
             .attr('rx', maxDimension / 2)
@@ -79,9 +59,6 @@ export class SkyVisualComponent implements OnChanges {
             .attr('y1', horizonPosition)
             .attr('x2', maxDimension)
             .attr('y2', horizonPosition);
-
-        this.horizonHouse
-            .attr('transform', `translate(${maxDimension / 2 - 20}, ${horizonPosition - 22})`)
 
         this.starsContainer
             .data([this.data]);
@@ -150,27 +127,6 @@ export class SkyVisualComponent implements OnChanges {
         this.horizonLine = this.svg
             .append('line')
             .attr('class', 'sky-visual__container__horizon-line');
-
-        this.horizonHouse = this.svg
-            .append('g')
-            .attr('class', 'sky-visual__container__horizon-house-g');
-        this.horizonHouse
-            .append('rect')
-            .attr('class', 'sky-visual__container__horizon-house-g__base')
-            .attr('width', 40)
-            .attr('height', 28);
-        this.horizonHouse
-            .append('rect')
-            .attr('class', 'sky-visual__container__horizon-house-g__roof')
-            .attr('width', 32)
-            .attr('height', 32)
-            .attr('transform', 'translate(0 -16), rotate(45, 20, 20)')
-        this.horizonHouse
-            .append('rect')
-            .attr('class', 'sky-visual__container__horizon-house-g__chimney')
-            .attr('width', 7)
-            .attr('height', 20)
-            .attr('transform', 'translate(28, -20)')
 
         timer((elapsed) => {
             const maxDimension = this.getMaxDimension();

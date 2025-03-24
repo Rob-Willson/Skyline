@@ -1,12 +1,14 @@
-import { ChangeDetectorRef, DestroyRef, Directive, EffectRef, ElementRef, inject, OnInit } from '@angular/core';
+import { ChangeDetectorRef, DestroyRef, Directive, ElementRef, inject, OnInit } from '@angular/core';
 import { NavigationService } from '../../services/navigation.service';
 import { NavButton } from '../../shared/types/nav-button.model';
 
-@Directive({})
-export class BasePageDirective implements OnInit {
-
+@Directive({
+    standalone: true,
+})
+export abstract class BasePageDirective implements OnInit {
     public width!: number;
     public height!: number;
+
     protected resizeObserver!: ResizeObserver;
 
     protected readonly elementRef: ElementRef = inject(ElementRef);

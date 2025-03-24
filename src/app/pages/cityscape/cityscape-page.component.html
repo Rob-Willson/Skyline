@@ -1,4 +1,14 @@
 <div class="cityscape-page__container">
-    <app-sky-visual [data]="data" [width]="width" [height]="height"></app-sky-visual>
-    <!-- <img src="images/ManchesterSkyline_Desaturated+Transparent.png" class="cityscape-page__container__buildings"> -->
+    <sky-visual
+        [data]="data"
+        [width]="width"
+        [height]="height"
+        class="cityscape-page__container__layer cityscape-page__container__layer--sky"
+    ></sky-visual>
+    
+    <buildings-visual
+        [width]="width"
+        [height]="height"
+        class="cityscape-page__container__layer cityscape-page__container__layer--buildings"
+    ></buildings-visual>
 </div>

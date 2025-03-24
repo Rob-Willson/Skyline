@@ -1,0 +1,9 @@
+.buildings-visual {
+    &__container {
+        &__horizon-house-g {
+            &__base, &__roof, &__chimney {
+                fill: var(--body-background-color);
+            }
+        }
+    }
+}
