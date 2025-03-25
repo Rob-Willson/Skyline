@@ -21,7 +21,7 @@
     }
 }
 
-@keyframes horizonGlareFadeIn {
+@keyframes fadeInOpacity {
     0% {
         opacity: 0;
     }
@@ -54,12 +54,18 @@
         &__horizon-line {
             stroke: rgb(46, 59, 65);
             stroke-width: 2px;
-            animation: horizonGlareFadeIn 4s ease-in-out forwards
+            animation: fadeInOpacity 4s ease-in-out forwards
         }
 
-        &__horizon-glare {
-            fill: url(#horizon-glare);
-            animation: horizonGlareFadeIn 4s ease-in-out forwards
+        &__horizon-glare-g {
+            &__lower {
+                fill: url(#horizon-glare-lower);
+            }
+
+            &__upper {
+                fill: url(#horizon-glare-upper);
+                animation: fadeInOpacity 4s ease-in-out forwards
+            }
         }
     }
 }

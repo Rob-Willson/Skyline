@@ -22,8 +22,9 @@ export class SkyVisualComponent extends BaseVisualDirective {
     private svg!: any;
     private defs!: any;
     private defsClipPathRect!: any;
-    private defsHorizonGlareRadialGradient!: any;
-    private horizonGlare!: any;
+    private horizonGlareContainer!: any;
+    private horizonGlareLower!: any;
+    private horizonGlareUpper!: any;
     private horizonLine!: any;
     private starsContainer!: any;
     private stars!: any;
@@ -60,10 +61,16 @@ export class SkyVisualComponent extends BaseVisualDirective {
         this.moon
             .attr('r', 40)
 
-        this.horizonGlare
-            .attr('rx', maxDimension / 2)
+        this.horizonGlareLower
+            .attr('rx', maxDimension * 0.6)
+            .attr('ry', 400)
+            .attr('cx', maxDimension * 0.5)
+            .attr('cy', horizonPosition);
+
+        this.horizonGlareUpper
+            .attr('rx', maxDimension * 0.5)
             .attr('ry', 300)
-            .attr('cx', maxDimension / 2)
+            .attr('cx', maxDimension * 0.5)
             .attr('cy', horizonPosition);
 
         this.horizonLine
@@ -92,7 +99,6 @@ export class SkyVisualComponent extends BaseVisualDirective {
                 .transition()
                 .delay(3000)
                 .style('animation-delay', () => `${Math.random() * 2}s`);
-
     }
 
     private generateSvg(): void {
@@ -108,9 +114,9 @@ export class SkyVisualComponent extends BaseVisualDirective {
             .attr('id', 'horizon')
             .append('rect');
 
-        this.defsHorizonGlareRadialGradient = this.defs
+        this.defs
             .append('radialGradient')
-            .attr('id', 'horizon-glare')
+            .attr('id', 'horizon-glare-upper')
             .attr('cx', '50%')
             .attr('cy', '50%')
             .attr('r', '50%')
@@ -128,19 +134,42 @@ export class SkyVisualComponent extends BaseVisualDirective {
             .attr('stop-color', (d: any) => d.color)
             .attr('stop-opacity', (d: any) => d.opacity);
 
+        this.defs
+            .append('radialGradient')
+            .attr('id', 'horizon-glare-lower')
+            .attr('cx', '50%')
+            .attr('cy', '50%')
+            .attr('r', '50%')
+            .attr('fx', '50%')
+            .attr('fy', '60%')
+            .selectAll('stop')
+            .data([
+                { offset: '0%', color: 'rgb(26, 28, 30)', opacity: 1.0 },
+                { offset: '50%', color: 'rgb(26, 28, 30)', opacity: 1.0 },
+                { offset: '100%', color: 'rgb(26, 28, 30)', opacity: 0 },
+            ])
+            .enter()
+            .append('stop')
+            .attr('offset', (d: any) => d.offset)
+            .attr('stop-color', (d: any) => d.color)
+            .attr('stop-opacity', (d: any) => d.opacity);
+
         this.starsContainer = this.svg.append('g')
             .attr('class', 'sky-visual__container__stars-g');
+
+        this.horizonGlareContainer = this.svg.append('g')
+            .attr('class', 'sky-visual__container__horizon-glare-g');
+        this.horizonGlareLower = this.horizonGlareContainer.append('ellipse')
+            .attr('class', 'sky-visual__container__horizon-glare-g__lower');
+        this.horizonGlareUpper = this.horizonGlareContainer.append('ellipse')
+            .attr('class', 'sky-visual__container__horizon-glare-g__upper');
 
         this.sunAndMoonContainer = this.svg.append('g')
             .attr('class', 'sky-visual__container__sun-and-moon-g');
         this.moonContainer = this.sunAndMoonContainer.append('g')
             .attr('class', 'sky-visual__container__moon-g');
         this.moon = this.moonContainer .append('circle')
-            .attr('class', 'sky-visual__container__moon-g__circle')
-
-        this.horizonGlare = this.svg
-            .append('ellipse')
-            .attr('class', 'sky-visual__container__horizon-glare');
+            .attr('class', 'sky-visual__container__moon-g__circle');
 
         this.horizonLine = this.svg
             .append('line')
