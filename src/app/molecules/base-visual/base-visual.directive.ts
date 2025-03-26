@@ -1,9 +1,13 @@
-import { Directive, Input, SimpleChanges } from '@angular/core';
+import { DestroyRef, Directive, inject, Input, SimpleChanges } from '@angular/core';
 
+// NOTE on host styling:
+// display: block - Ensure the component behaves as a block element so that it can be styled correctly, without relying on the parent. 
+//                  This is required due to encapsulation. 
+// pointer-events: none - makes sure that upper layers don't block interactions with lower layers. 
+//                        We do this at the component-level because otherwise even a fully transparent upper will block events. 
 @Directive({
     standalone: true,
-    host: { 'style': 'display: block' },    // Ensure the component behaves as a block element so that it can be styled correctly
-                                            //    without relying on the parent (required due to encapsulation)
+    host: { 'style': 'display: block; pointer-events: none;' },
 })
 export abstract class BaseVisualDirective {
     @Input({ required: true })
@@ -12,7 +16,9 @@ export abstract class BaseVisualDirective {
     @Input({ required: true })
     public height!: number;
 
-    constructor() { }
+    protected isInitialised: boolean = false;
+
+    protected readonly destroyRef: DestroyRef = inject(DestroyRef);
 
     public ngOnChanges(changes: SimpleChanges): void {
         if ((!changes['width'] || !changes['width'].currentValue) && (!changes['height'] || !changes['height'].currentValue)) {
@@ -23,9 +29,9 @@ export abstract class BaseVisualDirective {
             return;
         }
 
+        this.isInitialised = true;
         this.update();
     }
 
     protected abstract update(): void;
-
 }

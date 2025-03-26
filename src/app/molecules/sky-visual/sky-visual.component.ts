@@ -1,7 +1,10 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input, ViewEncapsulation } from '@angular/core';
+import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input, ViewEncapsulation, OnInit, inject } from '@angular/core';
 import { select, timer } from 'd3';
 import { PointMagnitude } from '../../shared/types/point.model';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
+import { TimeService } from '../../services/time-service';
+import { pipe } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'sky-visual',
@@ -12,12 +15,14 @@ import { BaseVisualDirective } from '../base-visual/base-visual.directive';
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
 })
-export class SkyVisualComponent extends BaseVisualDirective {
-    @Input({required: true})
+export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
+    @Input({ required: true })
     public data!: PointMagnitude[];
 
     @ViewChild('skyContainerElement', { static: true })
     public skyContainerElement!: ElementRef<HTMLElement>;
+
+    private currentTimeFormatted!: string;
 
     private svg!: any;
     private defs!: any;
@@ -31,10 +36,30 @@ export class SkyVisualComponent extends BaseVisualDirective {
     private sunAndMoonContainer!: any;
     private moonContainer!: any;
     private moon!: any;
+    private moonText!: any;
 
     private readonly horizonPositionFraction: number = 0.666;
+    
+    private readonly timeService: TimeService = inject(TimeService);
+
+    public ngOnInit(): void {
+        this.timeService.getTimeFormatted()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: ((timeFormatted: string) => {
+                    console.log(timeFormatted);
+                    this.currentTimeFormatted = timeFormatted;
+                    this.update();
+                }),
+                error: (error) => console.log("Failed to fetch time data", error),
+            });
+    }
 
     protected override update(): void {
+        if (!this.isInitialised) {
+            return;
+        }
+
         if (!this.svg) {
             this.generateSvg();
         }
@@ -58,8 +83,12 @@ export class SkyVisualComponent extends BaseVisualDirective {
         this.moonContainer
             .attr('transform', `rotate(270) translate(200, 0)`)
 
+        const moonRadius: number = 40;
         this.moon
-            .attr('r', 40)
+            .attr('r', moonRadius);
+        
+        this.moonText
+            .text(this.currentTimeFormatted);
 
         this.horizonGlareLower
             .attr('rx', maxDimension * 0.6)
@@ -88,17 +117,17 @@ export class SkyVisualComponent extends BaseVisualDirective {
                 (d: PointMagnitude, i: number) => `${d.x}-${d.y}-${i}`,
             )
             .join('g')
-                .attr('class', 'sky-visual__container__stars-g__star-g')
-                .attr('transform', (d: PointMagnitude) => `translate (${d.x * maxDimension}, ${d.y * maxDimension})`);
+            .attr('class', 'sky-visual__container__stars-g__star-g')
+            .attr('transform', (d: PointMagnitude) => `translate (${d.x * maxDimension}, ${d.y * maxDimension})`);
 
         this.stars.selectAll('circle')
             .data((d: any) => [d])
             .join('circle')
-                .attr('class', 'sky-visual__container__stars-g__star-g__circle')
-                .attr('r', (d: PointMagnitude) => d.magnitude)
-                .transition()
-                .delay(3000)
-                .style('animation-delay', () => `${Math.random() * 2}s`);
+            .attr('class', 'sky-visual__container__stars-g__star-g__circle')
+            .attr('r', (d: PointMagnitude) => d.magnitude)
+            .transition()
+            .delay(3000)
+            .style('animation-delay', () => `${Math.random() * 2}s`);
     }
 
     private generateSvg(): void {
@@ -124,9 +153,9 @@ export class SkyVisualComponent extends BaseVisualDirective {
             .attr('fy', '50%')
             .selectAll('stop')
             .data([
-              { offset: '0%', color: 'rgb(83, 107, 117)', opacity: 0.6 },
-              { offset: '60%', color: 'rgb(25, 53, 53)', opacity: 0.6 },
-              { offset: '100%', color: 'rgb(26, 28, 30)', opacity: 0 },
+                { offset: '0%', color: 'rgb(83, 107, 117)', opacity: 0.6 },
+                { offset: '60%', color: 'rgb(25, 53, 53)', opacity: 0.6 },
+                { offset: '100%', color: 'rgb(26, 28, 30)', opacity: 0 },
             ])
             .enter()
             .append('stop')
@@ -168,8 +197,17 @@ export class SkyVisualComponent extends BaseVisualDirective {
             .attr('class', 'sky-visual__container__sun-and-moon-g');
         this.moonContainer = this.sunAndMoonContainer.append('g')
             .attr('class', 'sky-visual__container__moon-g');
-        this.moon = this.moonContainer .append('circle')
-            .attr('class', 'sky-visual__container__moon-g__circle');
+        this.moon = this.moonContainer.append('circle')
+            .attr('class', 'sky-visual__container__moon-g__circle')
+            .on('mouseover', (event: MouseEvent, d: unknown) => {
+                this.moonText.classed('sky-visual__container__moon-g__text--hover', true);
+            })
+            .on('mouseout', (event: MouseEvent, d: unknown) => {
+                this.moonText.classed('sky-visual__container__moon-g__text--hover', false);
+            });
+        this.moonText = this.moonContainer.append('text')
+            .attr('class', 'sky-visual__container__moon-g__text')
+            .attr('y', 2);
 
         this.horizonLine = this.svg
             .append('line')
@@ -186,7 +224,9 @@ export class SkyVisualComponent extends BaseVisualDirective {
 
             const moonRotationAngle = (elapsed * 0.005) % 360;
             this.moonContainer
-                .attr('transform', `rotate(${moonRotationAngle}) translate(-${maxDimension * 0.25}, ${maxDimension * 0.25})`)
+                .attr('transform', `rotate(${moonRotationAngle}) translate(-${maxDimension * 0.25}, ${maxDimension * 0.25})`);
+            this.moonText
+                .attr('transform', `rotate(-${moonRotationAngle})`);
         });
     }
 
