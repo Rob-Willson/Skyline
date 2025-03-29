@@ -45,25 +45,27 @@
             }
         }
 
-        &__moon-g {
-            &__circle {
-                pointer-events: auto;
-                fill: rgb(168, 180, 184);
-                cursor: pointer;
-            }
-
-            &__text {
-                text-anchor: middle;
-                dominant-baseline: middle;
-                font-size: 25px;
-                font-family: 'Consolas';
-                letter-spacing: -2px;
-                fill: rgb(95, 95, 95);
-                opacity: 0;
-                transition: opacity var(--transition-speed-slow) ease-in-out;
-
-                &--hover {
-                    opacity: 1;
+        &__sun-and-moon-g {
+            &__moon-g {
+                &__circle {
+                    pointer-events: auto;
+                    fill: rgb(168, 180, 184);
+                    cursor: pointer;
+                }
+    
+                &__text {
+                    text-anchor: middle;
+                    dominant-baseline: middle;
+                    font-size: 25px;
+                    font-family: 'Consolas';
+                    letter-spacing: -2px;
+                    fill: rgb(95, 95, 95);
+                    opacity: 0;
+                    transition: opacity var(--transition-speed-slow) ease-in-out;
+    
+                    &--hover {
+                        opacity: 1;
+                    }
                 }
             }
         }

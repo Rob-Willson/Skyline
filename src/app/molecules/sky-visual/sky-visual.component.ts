@@ -1,10 +1,19 @@
-import { Component, ElementRef, ViewChild, ChangeDetectionStrategy, Input, ViewEncapsulation, OnInit, inject } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    ViewChild,
+    ChangeDetectionStrategy,
+    Input,
+    ViewEncapsulation,
+    OnInit,
+    inject,
+} from '@angular/core';
 import { select, timer } from 'd3';
 import { PointMagnitude } from '../../shared/types/point.model';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
 import { TimeService } from '../../services/time-service';
-import { pipe } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { SkyVisualClasses } from './sky-visual.classes';
 
 @Component({
     selector: 'sky-visual',
@@ -16,8 +25,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
 })
 export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
-    @Input({ required: true })
-    public data!: PointMagnitude[];
+    @Input({ required: true }) public data!: PointMagnitude[];
 
     @ViewChild('skyContainerElement', { static: true })
     public skyContainerElement!: ElementRef<HTMLElement>;
@@ -39,19 +47,19 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
     private moonText!: any;
 
     private readonly horizonPositionFraction: number = 0.666;
-    
+
     private readonly timeService: TimeService = inject(TimeService);
 
     public ngOnInit(): void {
-        this.timeService.getTimeFormatted()
+        this.timeService
+            .getTimeFormatted()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-                next: ((timeFormatted: string) => {
-                    console.log(timeFormatted);
+                next: (timeFormatted: string) => {
                     this.currentTimeFormatted = timeFormatted;
                     this.update();
-                }),
-                error: (error) => console.log("Failed to fetch time data", error),
+                },
+                error: (error) => console.log('Failed to fetch time data', error),
             });
     }
 
@@ -61,7 +69,7 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
         }
 
         if (!this.svg) {
-            this.generateSvg();
+            this.initialise();
         }
 
         const maxDimension = this.getMaxDimension();
@@ -77,18 +85,17 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
             .attr('width', maxDimension)
             .attr('height', horizonPosition);
 
-        this.sunAndMoonContainer
-            .attr('transform', `translate(${maxDimension * 0.5}, ${horizonPosition})`);
+        this.sunAndMoonContainer.attr(
+            'transform',
+            `translate(${maxDimension * 0.5}, ${horizonPosition})`
+        );
 
-        this.moonContainer
-            .attr('transform', `rotate(270) translate(200, 0)`)
+        this.moonContainer.attr('transform', `rotate(270) translate(200, 0)`);
 
         const moonRadius: number = 40;
-        this.moon
-            .attr('r', moonRadius);
-        
-        this.moonText
-            .text(this.currentTimeFormatted);
+        this.moon.attr('r', moonRadius);
+
+        this.moonText.text(this.currentTimeFormatted);
 
         this.horizonGlareLower
             .attr('rx', maxDimension * 0.6)
@@ -108,35 +115,48 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
             .attr('x2', maxDimension)
             .attr('y2', horizonPosition);
 
-        this.starsContainer
-            .data([this.data]);
+        this.starsContainer.data([this.data]);
 
-        this.stars = this.starsContainer.selectAll('g')
+        this.stars = this.starsContainer
+            .selectAll('g')
             .data(
                 (d: PointMagnitude[]) => d,
-                (d: PointMagnitude, i: number) => `${d.x}-${d.y}-${i}`,
+                (d: PointMagnitude, i: number) => `${d.x}-${d.y}-${i}`
             )
             .join('g')
-            .attr('class', 'sky-visual__container__stars-g__star-g')
-            .attr('transform', (d: PointMagnitude) => `translate (${d.x * maxDimension}, ${d.y * maxDimension})`);
+            .attr('class', SkyVisualClasses.starGroup)
+            .attr(
+                'transform',
+                (d: PointMagnitude) =>
+                    `translate (${d.x * maxDimension}, ${d.y * maxDimension})`
+            );
 
-        this.stars.selectAll('circle')
+        this.stars
+            .selectAll('circle')
             .data((d: any) => [d])
             .join('circle')
-            .attr('class', 'sky-visual__container__stars-g__star-g__circle')
+            .attr('class', SkyVisualClasses.starCircle)
             .attr('r', (d: PointMagnitude) => d.magnitude)
             .transition()
             .delay(3000)
             .style('animation-delay', () => `${Math.random() * 2}s`);
     }
 
-    private generateSvg(): void {
+    private initialise(): void {
+        this.generageSvg();
+        this.generateSvgDefs();
+        this.generateSvgElements();
+        this.startLuminaryRotations();
+    }
+
+    private generageSvg(): void {
         this.svg = select(this.skyContainerElement.nativeElement)
             .append('svg')
             .attr('clip-path', 'url(#horizon)');
+    }
 
-        this.defs = this.svg
-            .append('defs');
+    private generateSvgDefs() {
+        this.defs = this.svg.append('defs');
 
         this.defsClipPathRect = this.defs
             .append('clipPath')
@@ -182,51 +202,64 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
             .attr('offset', (d: any) => d.offset)
             .attr('stop-color', (d: any) => d.color)
             .attr('stop-opacity', (d: any) => d.opacity);
+    }
 
-        this.starsContainer = this.svg.append('g')
-            .attr('class', 'sky-visual__container__stars-g');
+    private generateSvgElements(): void {
+        this.starsContainer = this.svg
+            .append('g')
+            .attr('class', SkyVisualClasses.starsGroup);
 
-        this.horizonGlareContainer = this.svg.append('g')
-            .attr('class', 'sky-visual__container__horizon-glare-g');
-        this.horizonGlareLower = this.horizonGlareContainer.append('ellipse')
-            .attr('class', 'sky-visual__container__horizon-glare-g__lower');
-        this.horizonGlareUpper = this.horizonGlareContainer.append('ellipse')
-            .attr('class', 'sky-visual__container__horizon-glare-g__upper');
+        this.horizonGlareContainer = this.svg
+            .append('g')
+            .attr('class', SkyVisualClasses.horizonGlareGroup);
+        this.horizonGlareLower = this.horizonGlareContainer
+            .append('ellipse')
+            .attr('class', SkyVisualClasses.horizonGlareLower);
+        this.horizonGlareUpper = this.horizonGlareContainer
+            .append('ellipse')
+            .attr('class', SkyVisualClasses.horizonGlareUpper);
 
-        this.sunAndMoonContainer = this.svg.append('g')
-            .attr('class', 'sky-visual__container__sun-and-moon-g');
-        this.moonContainer = this.sunAndMoonContainer.append('g')
-            .attr('class', 'sky-visual__container__moon-g');
-        this.moon = this.moonContainer.append('circle')
-            .attr('class', 'sky-visual__container__moon-g__circle')
-            .on('mouseover', (event: MouseEvent, d: unknown) => {
-                this.moonText.classed('sky-visual__container__moon-g__text--hover', true);
+        this.sunAndMoonContainer = this.svg
+            .append('g')
+            .attr('class', SkyVisualClasses.sunAndMoonGroup);
+        this.moonContainer = this.sunAndMoonContainer
+            .append('g')
+            .attr('class', SkyVisualClasses.moonGroup);
+        this.moon = this.moonContainer
+            .append('circle')
+            .attr('class', SkyVisualClasses.moonCircle)
+            .on('mouseover', () => {
+                this.moonText.classed(SkyVisualClasses.moonTextHover, true);
             })
-            .on('mouseout', (event: MouseEvent, d: unknown) => {
-                this.moonText.classed('sky-visual__container__moon-g__text--hover', false);
+            .on('mouseout', () => {
+                this.moonText.classed(SkyVisualClasses.moonTextHover, false);
             });
-        this.moonText = this.moonContainer.append('text')
-            .attr('class', 'sky-visual__container__moon-g__text')
+
+        this.moonText = this.moonContainer
+            .append('text')
+            .attr('class', SkyVisualClasses.moonText)
             .attr('y', 2);
 
         this.horizonLine = this.svg
             .append('line')
-            .attr('class', 'sky-visual__container__horizon-line');
+            .attr('class', SkyVisualClasses.horizonLine);
+    }
 
+    private startLuminaryRotations(): void {
         timer((elapsed) => {
             const maxDimension = this.getMaxDimension();
 
             const cx = maxDimension * 0.5;
             const cy = maxDimension * this.horizonPositionFraction;
             const starsRotationAngle = (elapsed * 0.001) % 360;
-            this.starsContainer
-                .attr('transform', `rotate(${starsRotationAngle}, ${cx}, ${cy})`);
+            this.starsContainer.attr('transform', `rotate(${starsRotationAngle}, ${cx}, ${cy})`);
 
             const moonRotationAngle = (elapsed * 0.005) % 360;
-            this.moonContainer
-                .attr('transform', `rotate(${moonRotationAngle}) translate(-${maxDimension * 0.25}, ${maxDimension * 0.25})`);
-            this.moonText
-                .attr('transform', `rotate(-${moonRotationAngle})`);
+            this.moonContainer.attr(
+                'transform',
+                `rotate(${moonRotationAngle}) translate(-${maxDimension * 0.25}, ${maxDimension * 0.25})`
+            );
+            this.moonText.attr('transform', `rotate(-${moonRotationAngle})`);
         });
     }
 

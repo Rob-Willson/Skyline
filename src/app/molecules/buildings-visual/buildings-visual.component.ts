@@ -1,6 +1,13 @@
-import { ChangeDetectionStrategy, Component, ElementRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import {
+    ChangeDetectionStrategy,
+    Component,
+    ElementRef,
+    ViewChild,
+    ViewEncapsulation,
+} from '@angular/core';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
 import { select } from 'd3';
+import { BuildingsVisualClasses } from './buildings-visual.classes';
 
 @Component({
     selector: 'buildings-visual',
@@ -9,7 +16,7 @@ import { select } from 'd3';
     templateUrl: './buildings-visual.component.html',
     styleUrl: './buildings-visual.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
-    encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
+    encapsulation: ViewEncapsulation.None, // Required for styles to affect svg
 })
 export class BuildingsVisualComponent extends BaseVisualDirective {
     @ViewChild('buildingsContainerElement', { static: true })
@@ -34,31 +41,38 @@ export class BuildingsVisualComponent extends BaseVisualDirective {
             .attr('viewBox', `0 0 ${maxDimension} ${maxDimension}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
-        this.horizonHouse
-            .attr('transform', `translate(${maxDimension / 2 - 20}, ${horizonPosition - 10})`)
+        this.horizonHouse.attr(
+            'transform',
+            `translate(${maxDimension / 2 - 20}, ${horizonPosition - 20})`
+        );
     }
 
     private generateSvg(): void {
         this.svg = select(this.buildingsContainerElement.nativeElement)
-            .append('svg');
+            .append('svg')
+            .attr('viewBox', `0 0 ${this.width} ${this.height}`)
+            .attr('preserveAspectRatio', 'xMidYMid meet');
 
         this.horizonHouse = this.svg
             .append('g')
-            .attr('class', 'buildings-visual__container__horizon-house-g');
+            .attr('class', BuildingsVisualClasses.horizonHouseGroup);
+
         this.horizonHouse
             .append('rect')
-            .attr('class', 'buildings-visual__container__horizon-house-g__base')
+            .attr('class', BuildingsVisualClasses.horizonHouseBase)
             .attr('width', 40)
             .attr('height', 28);
+
         this.horizonHouse
             .append('rect')
-            .attr('class', 'buildings-visual__container__horizon-house-g__roof')
+            .attr('class', BuildingsVisualClasses.horizonHouseRoof)
             .attr('width', 32)
             .attr('height', 32)
             .attr('transform', 'translate(0 -16), rotate(45, 20, 20)');
+
         this.horizonHouse
             .append('rect')
-            .attr('class', 'buildings-visual__container__horizon-house-g__chimney')
+            .attr('class', BuildingsVisualClasses.horizonHouseChimney)
             .attr('width', 7)
             .attr('height', 20)
             .attr('transform', 'translate(28, -20)');
