@@ -1,7 +1,5 @@
 import {
     Component,
-    ElementRef,
-    ViewChild,
     ChangeDetectionStrategy,
     Input,
     ViewEncapsulation,
@@ -12,8 +10,8 @@ import { select, timer } from 'd3';
 import { PointMagnitude } from '../../shared/types/point.model';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
 import { TimeService } from '../../services/time-service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { SkyVisualClasses } from './sky-visual.classes';
+import { Observable } from 'rxjs';
 
 @Component({
     selector: 'sky-visual',
@@ -25,10 +23,9 @@ import { SkyVisualClasses } from './sky-visual.classes';
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
 })
 export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
-    @Input({ required: true }) public data!: PointMagnitude[];
-
-    @ViewChild('skyContainerElement', { static: true })
-    public skyContainerElement!: ElementRef<HTMLElement>;
+    // TODO: Should be wired into the BaseVisualDirective prerequisites for initialisation
+    @Input({ required: true })
+    public data!: PointMagnitude[];
 
     private currentTimeFormatted!: string;
 
@@ -50,28 +47,22 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
 
     private readonly timeService: TimeService = inject(TimeService);
 
-    public ngOnInit(): void {
-        this.timeService
-            .getTimeFormatted()
-            .pipe(takeUntilDestroyed(this.destroyRef))
-            .subscribe({
-                next: (timeFormatted: string) => {
-                    this.currentTimeFormatted = timeFormatted;
-                    this.update();
-                },
-                error: (error) => console.log('Failed to fetch time data', error),
-            });
+    protected override processData(data: string): void {
+        this.currentTimeFormatted = data;
+    }
+
+    protected override getData(): Observable<string> {
+        return this.timeService.getTimeFormatted();
+    }
+
+    protected initialise(): void {
+        this.generageSvg();
+        this.generateSvgDefs();
+        this.generateSvgElements();
+        this.startLuminaryRotations();
     }
 
     protected override update(): void {
-        if (!this.isInitialised) {
-            return;
-        }
-
-        if (!this.svg) {
-            this.initialise();
-        }
-
         const maxDimension = this.getMaxDimension();
         const horizonPosition = maxDimension * this.horizonPositionFraction;
 
@@ -142,15 +133,8 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
             .style('animation-delay', () => `${Math.random() * 2}s`);
     }
 
-    private initialise(): void {
-        this.generageSvg();
-        this.generateSvgDefs();
-        this.generateSvgElements();
-        this.startLuminaryRotations();
-    }
-
     private generageSvg(): void {
-        this.svg = select(this.skyContainerElement.nativeElement)
+        this.svg = select(this.containerElement.nativeElement)
             .append('svg')
             .attr('clip-path', 'url(#horizon)');
     }
@@ -263,7 +247,7 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
         });
     }
 
-    private getMaxDimension(): number {
+    private getMaxDimension = (): number => {
         return Math.sqrt(Math.pow(this.width, 2) + Math.pow(this.height, 2));
     }
 }

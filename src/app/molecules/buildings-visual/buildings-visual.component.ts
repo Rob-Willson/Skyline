@@ -1,13 +1,12 @@
 import {
     ChangeDetectionStrategy,
     Component,
-    ElementRef,
-    ViewChild,
     ViewEncapsulation,
 } from '@angular/core';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
 import { select } from 'd3';
 import { BuildingsVisualClasses } from './buildings-visual.classes';
+import { Observable, of } from 'rxjs';
 
 @Component({
     selector: 'buildings-visual',
@@ -19,36 +18,20 @@ import { BuildingsVisualClasses } from './buildings-visual.classes';
     encapsulation: ViewEncapsulation.None, // Required for styles to affect svg
 })
 export class BuildingsVisualComponent extends BaseVisualDirective {
-    @ViewChild('buildingsContainerElement', { static: true })
-    public buildingsContainerElement!: ElementRef<HTMLElement>;
-
     private svg!: any;
     private horizonHouse!: any;
 
     private readonly horizonPositionFraction: number = 0.666;
 
-    protected override update(): void {
-        if (!this.svg) {
-            this.generateSvg();
-        }
-
-        const maxDimension = this.getMaxDimension();
-        const horizonPosition = maxDimension * this.horizonPositionFraction;
-
-        this.svg
-            .attr('width', maxDimension)
-            .attr('height', maxDimension)
-            .attr('viewBox', `0 0 ${maxDimension} ${maxDimension}`)
-            .attr('preserveAspectRatio', 'xMidYMid meet');
-
-        this.horizonHouse.attr(
-            'transform',
-            `translate(${maxDimension / 2 - 20}, ${horizonPosition - 20})`
-        );
+    protected override getData(): Observable<unknown> {
+        return of(undefined);
     }
 
-    private generateSvg(): void {
-        this.svg = select(this.buildingsContainerElement.nativeElement)
+    protected override processData(data: unknown): void {
+    }
+
+    protected initialise(): void {
+        this.svg = select(this.containerElement.nativeElement)
             .append('svg')
             .attr('viewBox', `0 0 ${this.width} ${this.height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
@@ -76,6 +59,22 @@ export class BuildingsVisualComponent extends BaseVisualDirective {
             .attr('width', 7)
             .attr('height', 20)
             .attr('transform', 'translate(28, -20)');
+    }
+
+    protected override update(): void {
+        const maxDimension = this.getMaxDimension();
+        const horizonPosition = maxDimension * this.horizonPositionFraction;
+
+        this.svg
+            .attr('width', maxDimension)
+            .attr('height', maxDimension)
+            .attr('viewBox', `0 0 ${maxDimension} ${maxDimension}`)
+            .attr('preserveAspectRatio', 'xMidYMid meet');
+
+        this.horizonHouse.attr(
+            'transform',
+            `translate(${maxDimension / 2 - 20}, ${horizonPosition - 20})`
+        );
     }
 
     private getMaxDimension(): number {
