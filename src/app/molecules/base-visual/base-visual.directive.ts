@@ -1,17 +1,20 @@
 import { AfterViewInit, DestroyRef, Directive, ElementRef, inject, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { combineLatest, Observable, ReplaySubject, Subject } from 'rxjs';
+import { combineLatest, Observable, of, ReplaySubject } from 'rxjs';
 
 // NOTE on host styling:
 // display: block - Ensure the component behaves as a block element so that it can be styled correctly, without relying on the parent. 
-//                  This is required due to encapsulation. 
+//      This is required due to encapsulation. 
 // pointer-events: none - makes sure that upper layers don't block interactions with lower layers. 
-//                        We do this at the component-level because otherwise even a fully transparent upper will block events. 
+//      We do this at the component-level because otherwise even a fully transparent upper will block events. 
 @Directive({
     standalone: true,
     host: { 'style': 'display: block; pointer-events: none;' },
 })
-export abstract class BaseVisualDirective implements OnChanges, OnInit, AfterViewInit {
+export abstract class BaseVisualDirective<T> implements OnChanges, OnInit, AfterViewInit {
+    @Input({ required: true })
+    public data!: T;
+
     @Input({ required: true })
     public width!: number;
 
@@ -34,7 +37,7 @@ export abstract class BaseVisualDirective implements OnChanges, OnInit, AfterVie
         combineLatest([
             this.dimensionsReady,
             this.viewReady,
-            this.getData(),
+            this.getDataInternal(),
         ])
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
@@ -44,7 +47,7 @@ export abstract class BaseVisualDirective implements OnChanges, OnInit, AfterVie
                         this.isInitialised = true;
                     }
     
-                    this.processData(data);
+                    this.processDataInternal(data);
                     this.update();
                 },
                 error: (error) => console.log(`Failed to get data on '${this.constructor.name}'`, error),
@@ -71,9 +74,16 @@ export abstract class BaseVisualDirective implements OnChanges, OnInit, AfterVie
 
         this.viewReady.next();
     }
+    
+    // 'Internal data' may be fetched by the visual component itself, instead of being passed in, when it's worth using an external service for (e.g. time). 
+    // In most cases this won't be used and data will be passed in from the parent. 
+    protected getDataInternal(): Observable<unknown> {
+        return of(undefined);
+    }
 
-    protected abstract getData(): Observable<unknown>;
-    protected abstract processData(data: unknown): void;
+    protected processDataInternal(data: unknown): void {
+    }
+
     protected abstract initialise(): void;
     protected abstract update(): void;
 }

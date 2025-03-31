@@ -1,9 +1,7 @@
 import {
     Component,
     ChangeDetectionStrategy,
-    Input,
     ViewEncapsulation,
-    OnInit,
     inject,
 } from '@angular/core';
 import { select, timer } from 'd3';
@@ -22,11 +20,7 @@ import { Observable } from 'rxjs';
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
 })
-export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
-    // TODO: Should be wired into the BaseVisualDirective prerequisites for initialisation
-    @Input({ required: true })
-    public data!: PointMagnitude[];
-
+export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
     private currentTimeFormatted!: string;
 
     private svg!: any;
@@ -47,11 +41,11 @@ export class SkyVisualComponent extends BaseVisualDirective implements OnInit {
 
     private readonly timeService: TimeService = inject(TimeService);
 
-    protected override processData(data: string): void {
+    protected override processDataInternal(data: string): void {
         this.currentTimeFormatted = data;
     }
 
-    protected override getData(): Observable<string> {
+    protected override getDataInternal(): Observable<string> {
         return this.timeService.getTimeFormatted();
     }
 

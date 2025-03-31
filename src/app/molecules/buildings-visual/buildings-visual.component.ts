@@ -6,7 +6,6 @@ import {
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
 import { select } from 'd3';
 import { BuildingsVisualClasses } from './buildings-visual.classes';
-import { Observable, of } from 'rxjs';
 
 @Component({
     selector: 'buildings-visual',
@@ -17,18 +16,11 @@ import { Observable, of } from 'rxjs';
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None, // Required for styles to affect svg
 })
-export class BuildingsVisualComponent extends BaseVisualDirective {
+export class BuildingsVisualComponent extends BaseVisualDirective<any> {
     private svg!: any;
     private horizonHouse!: any;
 
     private readonly horizonPositionFraction: number = 0.666;
-
-    protected override getData(): Observable<unknown> {
-        return of(undefined);
-    }
-
-    protected override processData(data: unknown): void {
-    }
 
     protected initialise(): void {
         this.svg = select(this.containerElement.nativeElement)
