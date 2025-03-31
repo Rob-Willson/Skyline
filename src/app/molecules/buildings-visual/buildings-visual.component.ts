@@ -51,7 +51,14 @@ export class BuildingsVisualComponent extends BaseVisualDirective<any> {
             .attr('width', 7)
             .attr('height', 20)
             .attr('transform', 'translate(28, -20)');
-    }
+
+        this.horizonHouse
+            .append('rect')
+            .attr('class', BuildingsVisualClasses.horizonHouseWindow)
+            .attr('width', 7)
+            .attr('height', 7)
+            .attr('transform', 'translate(6, 4)');
+}
 
     protected override update(): void {
         const maxDimension = this.getMaxDimension();

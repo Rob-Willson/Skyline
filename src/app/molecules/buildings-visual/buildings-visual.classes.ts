@@ -9,4 +9,5 @@ export const BuildingsVisualClasses = {
     horizonHouseBase: `${horizonHouseGroup}__base`,
     horizonHouseRoof: `${horizonHouseGroup}__roof`,
     horizonHouseChimney: `${horizonHouseGroup}__chimney`,
+    horizonHouseWindow: `${horizonHouseGroup}__window`,
 };
