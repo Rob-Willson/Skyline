@@ -1,12 +1,13 @@
 <div class="cityscape-page__container">
     <sky-visual
-        [data]="data"
+        [data]="starData"
         [width]="width"
         [height]="height"
         class="cityscape-page__container__layer cityscape-page__container__layer--sky"
     ></sky-visual>
     
     <buildings-visual
+        [data]="buildingsData"
         [width]="width"
         [height]="height"
         class="cityscape-page__container__layer cityscape-page__container__layer--buildings"

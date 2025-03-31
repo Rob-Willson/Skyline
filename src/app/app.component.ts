@@ -7,7 +7,6 @@ import { LayoutComponent } from "./templates/layout/layout.component";
     standalone: true,
     imports: [RouterOutlet, LayoutComponent],
     templateUrl: './app.component.html',
-    styleUrl: './app.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {

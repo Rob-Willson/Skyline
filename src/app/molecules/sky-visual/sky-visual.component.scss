@@ -1,3 +1,5 @@
+@use 'animations';
+
 @keyframes starFadeIn {
     0% {
         opacity: 0;
@@ -18,15 +20,6 @@
     }
     100% {
         opacity: 1.0;
-    }
-}
-
-@keyframes fadeInOpacity {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
     }
 }
 
@@ -73,7 +66,7 @@
         &__horizon-line {
             stroke: rgb(46, 59, 65);
             stroke-width: 2px;
-            animation: fadeInOpacity 4s ease-in-out forwards
+            @include animations.fadeIn(4s);
         }
 
         &__horizon-glare-g {
@@ -83,7 +76,7 @@
 
             &__upper {
                 fill: url(#horizon-glare-upper);
-                animation: fadeInOpacity 4s ease-in-out forwards
+                @include animations.fadeIn(4s);
             }
         }
     }

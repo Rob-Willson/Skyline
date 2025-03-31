@@ -16,7 +16,8 @@ import { BuildingsVisualComponent } from '../../molecules/buildings-visual/build
 })
 export class CityscapePageComponent extends BasePageDirective implements OnInit, OnDestroy {
 
-    public data!: PointMagnitude[];
+    public starData!: PointMagnitude[];
+    public buildingsData: unknown[] = [];
 
     public constructor(
         private readonly starsService: StarsService,
@@ -35,7 +36,7 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: ((data: PointMagnitude[]) => {
-                    this.data = data;
+                    this.starData = data;
                 }),
                 error: (error) => console.log("Failed to fetch star data", error),
             });
