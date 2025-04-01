@@ -1,22 +1,33 @@
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
 @use '@angular/material' as mat;
 @use 'animations';
 
-html {
-  @include mat.theme((
+@include mat.core();
+
+// This palette is based on the Angular Material $cyan-palette
+$skyline-palette: ((
+    0: #000000, 10: #002d2d, 20: #003838, 25: #004343, 30: #004848, 35: #005353, 40: #005c5c, 50: #006666, 60: #007777, 70: #009999, 80: #00aaaa, 90: #00b2b2, 95: #6db8b8, 98: #98d6d6, 99: #b3e0e0, 100: #ffffff,
+    secondary: (0: #000000, 10: #051f1f, 20: #1b3534, 25: #27403f, 30: #324b4b, 35: #3e5757, 40: #4a6363, 50: #627c7b, 60: #7b9695, 70: #95b0b0, 80: #b0cccb, 90: #cce8e7, 95: #daf6f5, 98: #e3fffe, 99: #f1fffe, 100: #ffffff),
+    neutral: (0: #000000, 10: #191c1c, 20: #2d3131, 25: #383c3c, 30: #444747, 35: #4f5353, 40: #5b5f5f, 50: #747877, 60: #8e9191, 70: #a9acab, 80: #c4c7c6, 90: #e0e3e2, 95: #eff1f0, 98: #f7faf9, 99: #fafdfc, 100: #ffffff, 4: #0b0f0e, 6: #101414, 12: #1c2020, 17: #272b2a, 22: #313635, 24: #363a39, 87: #d7dbd9, 92: #e6e9e7, 94: #ebefed, 96: #f1f4f3),
+    neutral-variant: (0: #000000, 10: #141d1d, 20: #293232, 25: #343d3d, 30: #3f4948, 35: #4a5454, 40: #566060, 50: #6f7979, 60: #889392, 70: #a3adad, 80: #bec9c8, 90: #dae5e4, 95: #e9f3f2, 98: #f1fbfa, 99: #f4fefd, 100: #ffffff),
+    error: (0: #000000, 10: #410002, 20: #690005, 25: #7e0007, 30: #93000a, 35: #a80710, 40: #ba1a1a, 50: #de3730, 60: #ff5449, 70: #ff897d, 80: #ffb4ab, 90: #ffdad6, 95: #ffedea, 98: #fff8f7, 99: #fffbff, 100: #ffffff)
+));
+
+$skyline-theme: mat.define-theme((
     color: (
-      theme-type: light,
-      primary: mat.$azure-palette,
-      tertiary: mat.$blue-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
-}:root {
+        theme-type: dark,
+        primary: $skyline-palette,
+    )
+));
+
+// Just for theming
+html {
+    @include mat.all-component-themes($skyline-theme);
+}
+
+:root {
     // BACKGROUNDS
     --body-background-color: rgb(26, 28, 30);
-    
+
     // TEXT
     --text-color: rgb(245, 245, 245);
     --text-color--highlight: rgb(245, 245, 245);
@@ -48,16 +59,14 @@ html {
     box-sizing: border-box;
 }
 
-html, body {
+html,
+body {
     width: 100vw;
     height: 100vh;
     background-color: var(--body-background-color);
     margin: 0;
     padding: 0;
     overflow: hidden;
-}
-
-body {
     color: rgb(233, 206, 119);
     font-family: Roboto, "Helvetica Neue", sans-serif;
     font-weight: 400;
@@ -71,6 +80,3 @@ h1 {
 h2 {
     font-weight: 400;
 }
-
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
