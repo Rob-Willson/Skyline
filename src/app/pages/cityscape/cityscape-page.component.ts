@@ -5,11 +5,12 @@ import { StarsService } from '../../services/stars.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BasePageDirective } from '../base/base-page.directive';
 import { BuildingsVisualComponent } from '../../molecules/buildings-visual/buildings-visual.component';
+import { OptionsMenuComponent } from "../../organisms/options-menu/options-menu.component";
 
 @Component({
     selector: 'cityscape-page',
     standalone: true,
-    imports: [SkyVisualComponent, BuildingsVisualComponent],
+    imports: [SkyVisualComponent, BuildingsVisualComponent, OptionsMenuComponent],
     templateUrl: './cityscape-page.component.html',
     styleUrl: './cityscape-page.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,

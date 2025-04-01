@@ -1,0 +1,22 @@
+.options-menu {
+    &__container {
+        margin: 100px 20px;
+
+        &__form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+
+            &__form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            &__button-group {
+                display: flex;
+                gap: 4px;
+            }
+        }
+    }
+}

@@ -1,0 +1,35 @@
+<div class="options-menu__container">
+    <form [formGroup]="form" (ngSubmit)="submit()" class="options-menu__container__form">
+        <div class="options-menu__container__form__form-group">
+            <ui-toggle
+                [label]="'Show moon'"
+                [checked]="true"
+                class="options-menu__container__form__form-group__form-element"
+            ></ui-toggle>
+            <ui-toggle
+                [label]="'Show moon (disabled)'"
+                [checked]="true"
+                [disabled]="true"
+                class="options-menu__container__form__form-group__form-element"
+            ></ui-toggle>
+        </div>
+
+        <div class="options-menu__container__form__button-group">
+            <ui-button
+                [label]="'Cancel'"
+                [ariaLabel]="'Cancel'"
+                [iconName]="'cancel'"
+                [type]="'reset'"
+                class="options-menu__container__form__button-group__button"
+            ></ui-button>
+            <ui-button
+                [label]="'Submit'"
+                [ariaLabel]="'Submit'"
+                [iconName]="'done'"
+                [type]="'submit'"
+                class="options-menu__container__form__button-group__button"
+            ></ui-button>
+        </div>
+    </form>
+</div>
+
