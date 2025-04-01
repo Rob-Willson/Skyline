@@ -29,15 +29,17 @@ html {
     --body-background-color: rgb(26, 28, 30);
 
     // TEXT
-    --text-color: rgb(245, 245, 245);
+    --text-color: rgb(233, 206, 119);
     --text-color--highlight: rgb(245, 245, 245);
     --paragraph-font-size: 0.9rem;
+    --form-element-font-size: 0.8rem;
 
     // BORDERS
     --border-width: 2px;
     --border-radius: 4px;
     --border-color: transparent;
     --border-color--highlight: rgba(255, 255, 255, 0.5);
+    --border-color--alert: rgba(209, 164, 79, 0.8);
 
     // BUTTONS
     --button-text-color: rgba(245, 245, 245, 0.7);
@@ -67,7 +69,7 @@ body {
     margin: 0;
     padding: 0;
     overflow: hidden;
-    color: rgb(233, 206, 119);
+    color: var(--text-color);
     font-family: Roboto, "Helvetica Neue", sans-serif;
     font-weight: 400;
 }

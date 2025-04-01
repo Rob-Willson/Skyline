@@ -1,30 +1,40 @@
 .ui-button {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    background: none;
-    padding: 6px 12px;
-    border: var(--border-width) solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: var(--paragraph-font-size);
-    color: var(--button-text-color);
-    cursor: pointer;
-    text-decoration: none;
+    &__container {
+        --button-border-color: var(--border-color--highlight);
 
-    transition:
-        width 2s ease,
-        background-color var(--transition-speed-slow) ease-in-out,
-        color var(--transition-speed-fast) ease-in-out,
-        border-color var(--transition-speed-fast) ease-in-out;
-
-    &:hover {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        background: none;
+        padding: 6px 12px;
+        border: var(--border-width) solid transparent;   // HERE
+        border-radius: var(--border-radius);
+        font-size: var(--paragraph-font-size);
+        color: var(--button-text-color);
+        cursor: pointer;
         text-decoration: none;
-        background-color: var(--body-background-color);
-        color: var(--button-text-color--highlight);
-        border-color: var(--border-color--highlight);
+
+        transition:
+            width 2s ease,
+            background-color var(--transition-speed-slow) ease-in-out,
+            color var(--transition-speed-fast) ease-in-out,
+            border-color var(--transition-speed-fast) ease-in-out;
+
+        &:hover {
+            text-decoration: none;
+            background-color: var(--body-background-color);
+            color: var(--button-text-color--highlight);
+            border-color: var(--button-border-color);   // HERE
+        }
+
+        &__icon {
+            font-size: var(--button-icon-font-size);
+        }
     }
 
-    &__icon {
-        font-size: var(--button-icon-font-size);
+    &--reset {
+        .ui-button__container {
+            --button-border-color: rgb(209, 164, 79);
+        }
     }
 }

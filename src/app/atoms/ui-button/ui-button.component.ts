@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ElementRef, OnInit, inject, DestroyRef, ViewChild } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ElementRef, OnInit, inject, DestroyRef, ViewChild, HostBinding, ViewEncapsulation } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { NavButton } from '../../shared/types/nav-button.model';
@@ -13,8 +13,14 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     templateUrl: './ui-button.component.html',
     styleUrl: './ui-button.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
+    encapsulation: ViewEncapsulation.None,
 })
 export class UiButtonComponent implements OnInit {
+    @HostBinding('class.ui-button--reset')
+    public get isTypeReset(): boolean {
+        return this.type === 'reset';
+    }
+
     @Input({required: true})
     public label!: string;
 
@@ -32,6 +38,9 @@ export class UiButtonComponent implements OnInit {
 
     @Input()
     public type: 'button' | 'submit' | 'reset' = 'button';
+
+    @Input()
+    public disabled: boolean = false;
 
     @Output()
     public buttonClicked: EventEmitter<NavButton> = new EventEmitter();
@@ -63,6 +72,10 @@ export class UiButtonComponent implements OnInit {
     }
 
     public onClick(): void {
+        if (this.disabled) {
+            return;
+        }
+
         this.buttonClicked.emit();
     }
 
@@ -72,7 +85,7 @@ export class UiButtonComponent implements OnInit {
             : [];
 
         this.labelContainer = select(this.elementRef.nativeElement)
-            .select('.ui-button__label-container')
+            .select('.ui-button__container__label-container')
             .data([letters]);
 
         this.letterSpans = this.labelContainer.selectAll('span')

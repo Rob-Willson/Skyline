@@ -1,10 +1,17 @@
-<button [type]="type" (click)="onClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" class="ui-button">
+<button
+    [type]="type"
+    [disabled]="disabled"
+    (click)="onClick()"
+    (mouseenter)="onMouseEnter()"
+    (mouseleave)="onMouseLeave()"
+    class="ui-button__container"
+>
     <mat-icon
         *ngIf="iconName"
         fontIcon="{{iconName}}"
-        class="ui-button__icon"
+        class="ui-button__container__icon"
         aria-hidden="false"
     />
 
-    <span class="ui-button__label-container"></span>
+    <span class="ui-button__container__label-container"></span>
 </button>
