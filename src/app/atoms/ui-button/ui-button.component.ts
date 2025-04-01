@@ -30,6 +30,9 @@ export class UiButtonComponent implements OnInit {
     @Input()
     public iconName?: string;
 
+    @Input()
+    public type: 'button' | 'submit' | 'reset' = 'button';
+
     @Output()
     public buttonClicked: EventEmitter<NavButton> = new EventEmitter();
 

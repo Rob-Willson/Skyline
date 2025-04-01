@@ -1,4 +1,4 @@
-<button (click)="onClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" class="ui-button">
+<button [type]="type" (click)="onClick()" (mouseenter)="onMouseEnter()" (mouseleave)="onMouseLeave()" class="ui-button">
     <mat-icon
         *ngIf="iconName"
         fontIcon="{{iconName}}"
