@@ -1,0 +1,36 @@
+.ui-slider {
+    &__label {
+        font-size: var(--form-element-font-size);
+        display: block;
+        overflow-y: visible;
+        height: 8px;
+    }
+
+    &__container {
+        display: flex;
+        flex-direction: row;
+        gap: 4px;
+        font-size: var(--form-element-font-size);
+
+        &__slider {
+            width: 200px;
+
+            .mdc-slider__thumb {
+                // Override ripple background to reduce size and better fit site design
+                .mat-ripple-element {
+                    background: radial-gradient(circle, var(--mdc-slider-handle-color, var(--mat-sys-primary)) 0%, transparent 50%) !important;
+                }
+
+                // Cleans up the custom ripple background
+                .mdc-slider__thumb-knob {
+                    border: 2px solid var(--body-background-color);
+                    z-index: 1;
+                }
+            }
+        }
+
+        &__value {
+            align-self: center;
+        }
+    }
+}

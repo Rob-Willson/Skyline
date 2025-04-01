@@ -3,11 +3,12 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { UiButtonComponent } from "../../atoms/ui-button/ui-button.component";
 import { UiToggleComponent } from '../../atoms/ui-toggle/ui-toggle.component';
+import { UiSliderComponent } from '../../atoms/ui-slider/ui-slider.component';
 
 @Component({
   selector: 'options-menu',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UiButtonComponent, UiToggleComponent],
+  imports: [CommonModule, ReactiveFormsModule, UiButtonComponent, UiToggleComponent, UiSliderComponent],
   templateUrl: './options-menu.component.html',
   styleUrl: './options-menu.component.scss',
 changeDetection: ChangeDetectionStrategy.OnPush,

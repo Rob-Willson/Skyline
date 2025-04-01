@@ -1,0 +1,25 @@
+<label *ngIf="label" class="ui-slider__label">
+    {{ label }}
+</label>
+
+<div class="ui-slider__container">
+    <mat-slider
+        [min]="min"
+        [max]="max"
+        [step]="step"
+        [disabled]="disabled"
+        [showTickMarks]="true"
+        class="ui-slider__container__slider"
+    >
+        <input
+            [value]="100"
+            (input)="onInputChange($event)"
+            matSliderThumb
+            class="ui-slider__container__slider__input"
+        />
+    </mat-slider>
+
+    <label class="ui-slider__container__value">
+        {{ value }}
+    </label>
+</div>

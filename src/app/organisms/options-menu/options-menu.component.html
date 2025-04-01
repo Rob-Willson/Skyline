@@ -7,11 +7,28 @@
                 class="options-menu__container__form__form-group__form-element"
             ></ui-toggle>
             <ui-toggle
-                [label]="'Show moon (disabled)'"
+                [label]="'Rain'"
                 [checked]="true"
                 [disabled]="true"
                 class="options-menu__container__form__form-group__form-element"
             ></ui-toggle>
+
+            <ui-slider
+                [label]="'Star count'"
+                [value]="100"
+                [min]="50"
+                [max]="200"
+                [step]="10"
+                [disabled]="false"
+            ></ui-slider>
+            <ui-slider
+                [label]="'Star count'"
+                [value]="100"
+                [min]="50"
+                [max]="200"
+                [step]="10"
+                [disabled]="true"
+            ></ui-slider>
         </div>
 
         <div class="options-menu__container__form__button-group">
