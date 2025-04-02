@@ -23,10 +23,10 @@ export class UiToggleComponent extends UiBaseControlValueAccessor<boolean> {
     public label!: string;
 
     @Output()
-    public toggled: EventEmitter<boolean> = new EventEmitter();
+    public valueChange: EventEmitter<boolean> = new EventEmitter();
 
     public onValueChange(newValue: boolean): void {
         this.emitChange(newValue);
-        this.toggled.emit(newValue);
+        this.valueChange.emit(newValue);
     }
 }
