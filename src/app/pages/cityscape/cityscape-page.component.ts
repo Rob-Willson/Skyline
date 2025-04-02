@@ -6,6 +6,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BasePageDirective } from '../base/base-page.directive';
 import { BuildingsVisualComponent } from '../../molecules/buildings-visual/buildings-visual.component';
 import { OptionsMenuComponent } from "../../organisms/options-menu/options-menu.component";
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormItemConfig } from '../../shared/types/form.model';
 
 @Component({
     selector: 'cityscape-page',
@@ -16,12 +18,14 @@ import { OptionsMenuComponent } from "../../organisms/options-menu/options-menu.
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CityscapePageComponent extends BasePageDirective implements OnInit, OnDestroy {
-
+    public form!: FormGroup;
+    public formConfig!: FormItemConfig[];
     public starData!: PointMagnitude[];
     public buildingsData: unknown[] = [];
 
     public constructor(
         private readonly starsService: StarsService,
+        private readonly formBuilder: FormBuilder,
     ) {
         super();
     }
@@ -29,7 +33,20 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     public override ngOnInit(): void {
         super.ngOnInit();
 
+        this.getOptionsForm();
         this.getStarData();
+    }
+
+    private getOptionsForm(): void {
+        this.form = this.formBuilder.group({
+            starCount: [100, [Validators.required, Validators.min(50), Validators.max(200)]],
+            showMoon: [true],
+        });
+
+        this.formConfig = [
+            { formControlName: 'showMoon', label: 'Show moon', type: 'toggle' },
+            { formControlName: 'starCount', label: 'Star count', type: 'slider', min: 50, max: 200, step: 10 },
+        ];
     }
 
     private getStarData(): void {

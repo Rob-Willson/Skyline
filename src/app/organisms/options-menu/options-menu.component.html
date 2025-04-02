@@ -1,34 +1,30 @@
 <div class="options-menu__container">
     <form [formGroup]="form" (ngSubmit)="submit()" class="options-menu__container__form">
         <div class="options-menu__container__form__form-group">
-            <ui-toggle
-                [label]="'Show moon'"
-                [checked]="true"
-                class="options-menu__container__form__form-group__form-element"
-            ></ui-toggle>
-            <ui-toggle
-                [label]="'Rain'"
-                [checked]="true"
-                [disabled]="true"
-                class="options-menu__container__form__form-group__form-element"
-            ></ui-toggle>
+            <ng-container *ngFor="let item of formConfig">
+                <ui-toggle
+                    *ngIf="isToggle(item)"
+                    [formControlName]="item.formControlName"
+                    [label]="item.label"
+                    class="
+                        options-menu__container__form__form-group__form-element
+                        options-menu__container__form__form-group__form-element--toggle
+                    "
+                ></ui-toggle>
 
-            <ui-slider
-                [label]="'Star count'"
-                [value]="100"
-                [min]="50"
-                [max]="200"
-                [step]="10"
-                [disabled]="false"
-            ></ui-slider>
-            <ui-slider
-                [label]="'Star count'"
-                [value]="100"
-                [min]="50"
-                [max]="200"
-                [step]="10"
-                [disabled]="true"
-            ></ui-slider>
+                <ui-slider
+                    *ngIf="isSlider(item)"
+                    [formControlName]="item.formControlName"
+                    [label]="item.label"
+                    [min]="item.min"
+                    [max]="item.max"
+                    [step]="item.step"
+                    class="
+                        options-menu__container__form__form-group__form-element
+                        options-menu__container__form__form-group__form-element--slider
+                    "
+                ></ui-slider>
+            </ng-container>
         </div>
 
         <div class="options-menu__container__form__button-group">

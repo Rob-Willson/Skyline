@@ -1,27 +1,25 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CommonModule, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UiButtonComponent } from "../../atoms/ui-button/ui-button.component";
 import { UiToggleComponent } from '../../atoms/ui-toggle/ui-toggle.component';
 import { UiSliderComponent } from '../../atoms/ui-slider/ui-slider.component';
+import { FormItemConfig, FormSliderConfig, FormToggleConfig } from '../../shared/types/form.model';
 
 @Component({
   selector: 'options-menu',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UiButtonComponent, UiToggleComponent, UiSliderComponent],
+  imports: [CommonModule, ReactiveFormsModule, UiButtonComponent, UiToggleComponent, UiSliderComponent, NgIf],
   templateUrl: './options-menu.component.html',
   styleUrl: './options-menu.component.scss',
 changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsMenuComponent {
+    @Input({required: true})
     public form!: FormGroup;
 
-    public constructor(private readonly formBuilder: FormBuilder) {
-        this.form = this.formBuilder.group({
-            starCount: [100, [Validators.required, Validators.min(50), Validators.max(200)]],
-            showMoon: [true],
-        });
-    }
+    @Input({required: true})
+    public formConfig!: FormItemConfig[];
 
     public submit(): void {
         if (this.form.valid) {
@@ -32,4 +30,11 @@ export class OptionsMenuComponent {
         }
     }
 
+    public isToggle(config: FormItemConfig): config is FormToggleConfig {
+        return config.type === 'toggle';
+    }
+
+    public isSlider(config: FormItemConfig): config is FormSliderConfig {
+        return config.type === 'slider';
+    }
 }

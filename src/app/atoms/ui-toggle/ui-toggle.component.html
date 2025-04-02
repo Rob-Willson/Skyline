@@ -1,7 +1,7 @@
 <mat-slide-toggle
-    [checked]="checked"
+    [checked]="value"
     [disabled]="disabled"
-    (change)="onChange($event)"
+    (change)="onToggleChange($event.checked)"
     class="ui-toggle"
 >
     <span class="ui-toggle__label">{{ label }}</span>
