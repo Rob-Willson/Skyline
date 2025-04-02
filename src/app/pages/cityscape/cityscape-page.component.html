@@ -7,7 +7,7 @@
     ></sky-visual>
     
     <buildings-visual
-        [data]="buildingsData"
+        [data]="undefined"
         [width]="width"
         [height]="height"
         class="cityscape-page__container__layer cityscape-page__container__layer--buildings"
@@ -16,5 +16,6 @@
     <options-menu
         [form]="form"
         [formConfig]="formConfig"
+        (reset)="onReset()"
     ></options-menu>
 </div>

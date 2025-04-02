@@ -16,11 +16,15 @@ import { BuildingsVisualClasses } from './buildings-visual.classes';
     changeDetection: ChangeDetectionStrategy.OnPush,
     encapsulation: ViewEncapsulation.None, // Required for styles to affect svg
 })
-export class BuildingsVisualComponent extends BaseVisualDirective<any> {
+export class BuildingsVisualComponent extends BaseVisualDirective<void> {
     private svg!: any;
     private horizonHouse!: any;
 
     private readonly horizonPositionFraction: number = 0.666;
+
+    protected override validateExternalData(_: void): boolean {
+        return true;
+    }
 
     protected initialise(): void {
         this.svg = select(this.containerElement.nativeElement)

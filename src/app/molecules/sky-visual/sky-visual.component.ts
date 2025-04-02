@@ -41,6 +41,10 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
 
     private readonly timeService: TimeService = inject(TimeService);
 
+    protected override validateExternalData(data: PointMagnitude[]): boolean {
+        return data?.length > 0;
+    }
+
     protected override processDataInternal(data: string): void {
         this.currentTimeFormatted = data;
     }
@@ -108,22 +112,26 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
                 (d: PointMagnitude[]) => d,
                 (d: PointMagnitude, i: number) => `${d.x}-${d.y}-${i}`
             )
-            .join('g')
-            .attr('class', SkyVisualClasses.starGroup)
-            .attr(
-                'transform',
-                (d: PointMagnitude) =>
-                    `translate (${d.x * maxDimension}, ${d.y * maxDimension})`
+            .join(
+                (enter: any) => enter
+                    .append('g')
+                    .attr('class', SkyVisualClasses.starGroup)
+                    .attr('transform', (d: PointMagnitude) => `translate (${d.x * maxDimension}, ${d.y * maxDimension})`),
+                (update: any) => update,
+                (exit: any) => exit
+                    .attr('opacity', 1)
+                    .transition()
+                    .duration(1500)
+                    .attr('opacity', 0)
+                    .remove()
             );
 
         this.stars
             .selectAll('circle')
-            .data((d: any) => [d])
+            .data((d: PointMagnitude) => [d])
             .join('circle')
             .attr('class', SkyVisualClasses.starCircle)
             .attr('r', (d: PointMagnitude) => d.magnitude)
-            .transition()
-            .delay(3000)
             .style('animation-delay', () => `${Math.random() * 2}s`);
     }
 

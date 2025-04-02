@@ -28,6 +28,7 @@ export abstract class BaseVisualDirective<T> implements OnChanges, OnInit, After
 
     protected isInitialised: boolean = false;
 
+    private readonly dataReady = new ReplaySubject<void>();
     private readonly dimensionsReady = new ReplaySubject<void>();
     private readonly viewReady = new ReplaySubject<void>();
 
@@ -37,17 +38,18 @@ export abstract class BaseVisualDirective<T> implements OnChanges, OnInit, After
         combineLatest([
             this.dimensionsReady,
             this.viewReady,
+            this.dataReady,
             this.getDataInternal(),
         ])
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-                next: ([_, __, data]: [void, void, unknown]) => {
+                next: ([_, __, ___, dataInternal]: [void, void, void, unknown]) => {
                     if (!this.isInitialised) {
                         this.initialise();
                         this.isInitialised = true;
                     }
     
-                    this.processDataInternal(data);
+                    this.processDataInternal(dataInternal);
                     this.update();
                 },
                 error: (error) => console.log(`Failed to get data on '${this.constructor.name}'`, error),
@@ -55,15 +57,13 @@ export abstract class BaseVisualDirective<T> implements OnChanges, OnInit, After
     }
 
     public ngOnChanges(changes: SimpleChanges): void {
-        if ((!changes['width'] || !changes['width'].currentValue) && (!changes['height'] || !changes['height'].currentValue)) {
-            return;
+        if (this.validateExternalData(this.data)) {
+            this.dataReady.next();
         }
 
-        if (this.width === 0 || this.height === 0) {
-            return;
+        if (this.validateDimensions(this.width, this.height)) {
+            this.dimensionsReady.next();
         }
-
-        this.dimensionsReady.next();
     }
 
     public ngAfterViewInit(): void {
@@ -83,6 +83,12 @@ export abstract class BaseVisualDirective<T> implements OnChanges, OnInit, After
 
     protected processDataInternal(data: unknown): void {
     }
+    
+    protected validateDimensions(width: number, height: number): boolean {
+        return width > 0 && height > 0;
+    }
+
+    protected abstract validateExternalData(data: T): boolean;
 
     protected abstract initialise(): void;
     protected abstract update(): void;

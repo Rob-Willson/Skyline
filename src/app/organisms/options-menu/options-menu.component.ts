@@ -1,5 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UiButtonComponent } from "../../atoms/ui-button/ui-button.component";
 import { UiToggleComponent } from '../../atoms/ui-toggle/ui-toggle.component';
@@ -20,6 +20,9 @@ export class OptionsMenuComponent {
 
     @Input({required: true})
     public formConfig!: FormItemConfig[];
+
+    @Output()
+    public reset: EventEmitter<void> = new EventEmitter();
 
     public submit(): void {
         if (this.form.valid) {
