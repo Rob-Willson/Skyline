@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
-import { MatSlideToggleChange, MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiBaseControlValueAccessor } from '../ui-control-value-accessor/ui-control-value-accessor';
 
 @Component({
