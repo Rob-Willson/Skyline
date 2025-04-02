@@ -12,9 +12,9 @@
         class="ui-slider__container__slider"
     >
         <input
-            [value]="value"
-            (input)="onInputChange($event)"
             matSliderThumb
+            [value]="value"
+            (input)="onValueChange($event)"
             class="ui-slider__container__slider__input"
         />
     </mat-slider>
