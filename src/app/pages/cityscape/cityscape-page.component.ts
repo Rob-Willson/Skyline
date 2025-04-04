@@ -8,6 +8,7 @@ import { BuildingsVisualComponent } from '../../molecules/buildings-visual/build
 import { OptionsMenuComponent } from "../../organisms/options-menu/options-menu.component";
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormItemConfig } from '../../shared/types/form.model';
+import { debounceTime } from 'rxjs';
 
 @Component({
     selector: 'cityscape-page',
@@ -21,6 +22,8 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     public form!: FormGroup;
     public formConfig!: FormItemConfig[];
     public starData!: PointMagnitude[];
+
+    private readonly debounceDelayMillis: number = 300;
 
     public constructor(
         private readonly starsService: StarsService,
@@ -36,7 +39,10 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
         this.getStarData();
 
         this.form.valueChanges
-            .pipe(takeUntilDestroyed(this.destroyRef))
+            .pipe(
+                debounceTime(this.debounceDelayMillis),
+                takeUntilDestroyed(this.destroyRef),
+            )
             .subscribe((values) => this.onFormChange(values));
     }
 
@@ -66,6 +72,7 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
             .subscribe({
                 next: ((data: PointMagnitude[]) => {
                     this.starData = data;
+                    this.changeDetectorRef.markForCheck();
                 }),
                 error: (error) => console.log("Failed to fetch star data", error),
             });
