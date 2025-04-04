@@ -25,6 +25,10 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
 
     private readonly debounceDelayMillis: number = 300;
 
+    private readonly minStars: number = 50;
+    private readonly maxStars: number = 300;
+    private readonly starCountStep: number = 25;
+
     public constructor(
         private readonly starsService: StarsService,
         private readonly formBuilder: FormBuilder,
@@ -46,24 +50,33 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
             .subscribe((values) => this.onFormChange(values));
     }
 
-    public onReset(): void {
-        console.log("reset...");
-    }
-
     private onFormChange(values: { showMoon: boolean, starCount: number }): void {
         this.getStarData();
     }
 
+    public onReset(): void {
+        this.form.reset(this.getDefaultFormValues());
+    }
+
     private getOptionsForm(): void {
+        const defaults = this.getDefaultFormValues();
+
         this.form = this.formBuilder.group({
-            starCount: [150, [Validators.required, Validators.min(50), Validators.max(200)]],
-            showMoon: [true],
+            starCount: [defaults.starCount, [Validators.required, Validators.min(this.minStars), Validators.max(this.maxStars)]],
+            showMoon: [defaults.showMoon],
         });
 
         this.formConfig = [
             { formControlName: 'showMoon', label: 'Show moon', type: 'toggle' },
-            { formControlName: 'starCount', label: 'Star count', type: 'slider', min: 50, max: 300, step: 25 },
+            { formControlName: 'starCount', label: 'Star count', type: 'slider', min: this.minStars, max: this.maxStars, step: this.starCountStep },
         ];
+    }
+
+    private getDefaultFormValues(): { starCount: number; showMoon: boolean } {
+        return {
+            starCount: 150,
+            showMoon: true,
+        };
     }
 
     private getStarData(): void {

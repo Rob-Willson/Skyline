@@ -21,7 +21,6 @@ import { UiBaseControlValueAccessor } from '../ui-control-value-accessor/ui-cont
     encapsulation: ViewEncapsulation.None,
 })
 export class UiSliderComponent extends UiBaseControlValueAccessor<number> {
-
     @Input({required: true})
     public min!: number;
 
