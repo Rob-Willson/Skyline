@@ -1,5 +1,5 @@
 <div class="options-menu__container">
-    <form [formGroup]="form" (ngSubmit)="submit()" class="options-menu__container__form">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="options-menu__container__form">
         <div class="options-menu__container__form__form-group">
             <ng-container *ngFor="let item of formConfig">
                 <ui-toggle

@@ -54,6 +54,10 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
         this.getStarData();
     }
 
+    public onSubmit(): void {
+        console.log("onSubmit...", this.form.value);
+    }
+
     public onReset(): void {
         this.form.reset(this.getDefaultFormValues());
     }

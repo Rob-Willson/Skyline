@@ -22,12 +22,17 @@ export class OptionsMenuComponent {
     public formConfig!: FormItemConfig[];
 
     @Output()
+    public submit: EventEmitter<void> = new EventEmitter();
+
+    @Output()
     public reset: EventEmitter<void> = new EventEmitter();
 
-    public submit(): void {
+    public onSubmit(): void {
+        console.log("submitting form...", this.form);
         if (this.form.valid) {
-            console.log("submitting form", this.form);
+            console.log("  FORM VALID", this.form);
         } else {
+            console.log("  FORM INVALID", this.form);
             // Trigger validation messages
             this.form.markAllAsTouched();
         }
