@@ -9,11 +9,14 @@ import { OptionsMenuComponent } from "../../organisms/options-menu/options-menu.
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FormItemConfig } from '../../shared/types/form.model';
 import { debounceTime } from 'rxjs';
+import { ConversationCase, ConversationState } from '../../shared/types/conversation.model';
+import { ConversationBubblesComponent } from '../../molecules/conversation-bubbles/conversation-bubbles.component';
+import { ConversationService } from '../../services/conversation.service';
 
 @Component({
     selector: 'cityscape-page',
     standalone: true,
-    imports: [SkyVisualComponent, BuildingsVisualComponent, OptionsMenuComponent],
+    imports: [SkyVisualComponent, BuildingsVisualComponent, OptionsMenuComponent, ConversationBubblesComponent],
     templateUrl: './cityscape-page.component.html',
     styleUrl: './cityscape-page.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -22,6 +25,7 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     public form!: FormGroup;
     public formConfig!: FormItemConfig[];
     public starData!: PointMagnitude[];
+    public conversationState!: ConversationState;
 
     private readonly debounceDelayMillis: number = 300;
 
@@ -32,6 +36,7 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     public constructor(
         private readonly starsService: StarsService,
         private readonly formBuilder: FormBuilder,
+        private readonly conversationService: ConversationService,
     ) {
         super();
     }
@@ -41,6 +46,7 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
 
         this.getOptionsForm();
         this.getStarData();
+        this.getConversationData();
 
         this.form.valueChanges
             .pipe(
@@ -60,6 +66,11 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
 
     public onReset(): void {
         this.form.reset(this.getDefaultFormValues());
+    }
+
+    public onConversationSelect(data: ConversationCase): void {
+        this.conversationService.update(data);
+        this.getConversationData();
     }
 
     private getOptionsForm(): void {
@@ -92,6 +103,18 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
                     this.changeDetectorRef.markForCheck();
                 }),
                 error: (error) => console.log("Failed to fetch star data", error),
+            });
+    }
+
+    private getConversationData(): void {
+        this.conversationService.fetchConversationState()
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe({
+                next: ((data: ConversationState) => {
+                    console.log("pop", data);
+                    this.conversationState = data;
+                    this.changeDetectorRef.markForCheck();  // TODO: check if required
+                })
             });
     }
 

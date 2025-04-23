@@ -1,0 +1,17 @@
+<div #containerElement class="conversation-bubbles__container">
+    <div class="conversation-bubbles__container__inputs">
+        <div *ngFor="let case of data.cases" class="conversation-bubbles__container__inputs__bubble-wrapper">
+            <ui-button
+                [label]="case.input"
+                [ariaLabel]="case.input"
+                [hideLabel]="false"
+                (buttonClicked)="onSelect(case)"
+                class="conversation-bubbles__container__bubble-wrapper__bubble"
+            ></ui-button>
+        </div>
+    </div>
+
+    <div class="conversation-bubbles__container__output">
+        {{lastSelection?.output ?? '...'}}
+    </div>
+</div>

@@ -19,4 +19,14 @@
         (submit)="onSubmit()"
         (reset)="onReset()"
     ></options-menu>
+
+    <conversation-bubbles
+        [data]="conversationState"
+        [width]="width"
+        [height]="height"
+        (select)="onConversationSelect($event)"
+        class="cityscape-page__container__layer cityscape-page__container__layer--bubbles"
+    ></conversation-bubbles>
+
+
 </div>

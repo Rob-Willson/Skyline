@@ -26,9 +26,15 @@
             color: var(--button-text-color--highlight);
             border-color: var(--button-border-color);   // HERE
         }
-
+        
         &__icon {
             font-size: var(--button-icon-font-size);
+        }
+
+        &__label-container {
+            &__label {
+                white-space: pre;   // Ensures that spans containing only spaces aren't width 0
+            }
         }
     }
 

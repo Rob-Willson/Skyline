@@ -60,15 +60,23 @@ export class UiButtonComponent implements OnInit {
         this.labelUpdate$.pipe(
             debounceTime(Math.max(this.labelAppearDelayMillis, this.labelDisappearDelayMillis)),
             takeUntilDestroyed(this.destroyRef),
-        ).subscribe((show: boolean) => this.updateLabelText(show))
+        ).subscribe((show: boolean) => this.updateLabelText(show));
+
+        if (!this.hideLabel) {
+            this.labelUpdate$.next(true);
+        }
     }
 
     public onMouseEnter(): void {
-        this.labelUpdate$.next(true);
+        if (this.showLabelOnHover) {
+            this.labelUpdate$.next(true);
+        }
     }
 
     public onMouseLeave(): void {
-        this.labelUpdate$.next(false);
+        if (this.hideLabel) {
+            this.labelUpdate$.next(false);
+        }
     }
 
     public onClick(): void {
@@ -93,6 +101,7 @@ export class UiButtonComponent implements OnInit {
 
         this.letterSpans.enter()
             .append('span')
+            .attr('class', 'ui-button__container__label-container__label')
             .text((d: string) => d)
             .style('opacity', 0)
             .style('display', 'none')

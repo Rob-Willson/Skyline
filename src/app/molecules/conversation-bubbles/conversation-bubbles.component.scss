@@ -1,0 +1,33 @@
+.conversation-bubbles {
+    &__container {
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        gap: 100px;
+
+        &__inputs {
+            display: flex;
+            gap: 20px;
+            min-height: 40px;
+            justify-content: center;
+            pointer-events: auto;
+
+            &__bubble-wrapper {
+                &__bubble {
+                    pointer-events: auto;
+                }
+            }
+        }
+
+        &__output {
+            // position: fixed;
+            bottom: 24px;
+            text-align: center;
+            pointer-events: auto;
+        }
+
+        svg {
+            display: none;
+        }
+    }
+}
