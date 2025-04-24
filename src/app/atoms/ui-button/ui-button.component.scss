@@ -24,7 +24,7 @@
             text-decoration: none;
             background-color: var(--body-background-color);
             color: var(--button-text-color--highlight);
-            border-color: var(--button-border-color);   // HERE
+            border-color: var(--button-border-color);
         }
         
         &__icon {
@@ -41,6 +41,19 @@
     &--reset {
         .ui-button__container {
             --button-border-color: rgb(209, 164, 79);
+        }
+    }
+
+    &--disabled {
+        opacity: 0.5;
+
+        .ui-button__container {
+            &:hover {
+                text-decoration: none;
+                background-color: transparent;
+                color: var(--button-text-color);
+                border-color: transparent;
+            }
         }
     }
 }

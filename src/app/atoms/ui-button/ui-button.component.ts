@@ -21,6 +21,11 @@ export class UiButtonComponent implements OnInit {
         return this.type === 'reset';
     }
 
+    @HostBinding('class.ui-button--disabled')
+    public get isDisabled(): boolean {
+        return this.disabled;
+    }
+
     @Input({required: true})
     public label!: string;
 
