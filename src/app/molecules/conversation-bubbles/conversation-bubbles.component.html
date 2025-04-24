@@ -5,6 +5,7 @@
                 [label]="case.input"
                 [ariaLabel]="case.input"
                 [hideLabel]="false"
+                [disabled]="case.input === lastSelection?.input"
                 (buttonClicked)="onSelect(case)"
                 class="conversation-bubbles__container__bubble-wrapper__bubble"
             ></ui-button>
