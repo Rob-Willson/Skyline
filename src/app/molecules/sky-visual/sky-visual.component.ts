@@ -3,6 +3,7 @@ import {
     ChangeDetectionStrategy,
     ViewEncapsulation,
     inject,
+    Input,
 } from '@angular/core';
 import { select, timer } from 'd3';
 import { PointMagnitude } from '../../shared/types/point.model';
@@ -21,6 +22,9 @@ import { Observable } from 'rxjs';
     encapsulation: ViewEncapsulation.None,  // Required for styles to affect svg
 })
 export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
+    @Input({required: true})
+    public horizonPositionFraction!: number;
+
     private currentTimeFormatted!: string;
 
     private svg!: any;
@@ -36,8 +40,6 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
     private moonContainer!: any;
     private moon!: any;
     private moonText!: any;
-
-    private readonly horizonPositionFraction: number = 0.666;
 
     private readonly timeService: TimeService = inject(TimeService);
 
@@ -62,12 +64,12 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
 
     protected override update(): void {
         const maxDimension = this.getMaxDimension();
-        const horizonPosition = maxDimension * this.horizonPositionFraction;
+        const horizonPosition = this.height * this.horizonPositionFraction;
 
         this.svg
             .attr('width', maxDimension)
-            .attr('height', maxDimension)
-            .attr('viewBox', `0 0 ${maxDimension} ${maxDimension}`)
+            .attr('height', this.height)
+            .attr('viewBox', `0 0 ${maxDimension} ${this.height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
         this.defsClipPathRect

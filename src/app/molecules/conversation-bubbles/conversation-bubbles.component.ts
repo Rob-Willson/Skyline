@@ -1,15 +1,14 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, OnChanges, Output, SimpleChanges, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, OnChanges, Output, ViewEncapsulation } from '@angular/core';
 import { ConversationCase, ConversationState } from '../../shared/types/conversation.model';
-import { NgFor } from '@angular/common';
+import { NgFor, NgStyle } from '@angular/common';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
 import { select } from 'd3';
 import { UiButtonComponent } from '../../atoms/ui-button/ui-button.component';
-import { last } from 'rxjs';
 
 @Component({
     selector: 'conversation-bubbles',
     standalone: true,
-    imports: [NgFor, UiButtonComponent],
+    imports: [NgFor, NgStyle, UiButtonComponent],
     templateUrl: './conversation-bubbles.component.html',
     styleUrl: './conversation-bubbles.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -30,6 +29,24 @@ export class ConversationBubblesComponent extends BaseVisualDirective<Conversati
     public onSelect(selectedCase: ConversationCase): void {
         this.select.emit(selectedCase);
         this.lastSelection = selectedCase;
+    }
+
+    public getBubbleYOffset(i: number): { [key: string]: string } {
+        const radius: number = 80;
+        const totalCount: number = this.data.cases.length;
+        const arcStart = -Math.PI / 3;
+        const arcEnd = Math.PI / 3;
+    
+        const t = (i + 0.5) / totalCount;
+        const angle = arcStart + t * (arcEnd - arcStart);
+    
+        const yOffset = (1 - Math.cos(angle)) * radius;
+    
+        console.log(i, yOffset);
+
+        return {
+            'margin-top': `${yOffset}px`
+        };
     }
 
     protected override validateExternalData(data: ConversationState): boolean {

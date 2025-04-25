@@ -7,4 +7,4 @@ export interface ConversationCase {
 export interface ConversationState {
     id: string;
     cases: ConversationCase[];
-} 
+}

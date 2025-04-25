@@ -32,6 +32,8 @@
         }
 
         &__label-container {
+            width: max-content;
+
             &__label {
                 white-space: pre;   // Ensures that spans containing only spaces aren't width 0
             }

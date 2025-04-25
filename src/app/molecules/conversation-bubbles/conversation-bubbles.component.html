@@ -1,6 +1,11 @@
 <div #containerElement class="conversation-bubbles__container">
     <div class="conversation-bubbles__container__inputs">
-        <div *ngFor="let case of data.cases" class="conversation-bubbles__container__inputs__bubble-wrapper">
+        <div
+            *ngFor="let case of data.cases; let i = index"
+            [class.conversation-bubbles__container__inputs__bubble-wrapper--]
+            class="conversation-bubbles__container__inputs__bubble-wrapper"
+            [ngStyle]="getBubbleYOffset(i)"
+        >
             <ui-button
                 [label]="case.input"
                 [ariaLabel]="case.input"

@@ -1,6 +1,7 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    Input,
     ViewEncapsulation,
 } from '@angular/core';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
@@ -17,10 +18,11 @@ import { BuildingsVisualClasses } from './buildings-visual.classes';
     encapsulation: ViewEncapsulation.None, // Required for styles to affect svg
 })
 export class BuildingsVisualComponent extends BaseVisualDirective<void> {
+    @Input({required: true})
+    public horizonPositionFraction!: number;
+
     private svg!: any;
     private horizonHouse!: any;
-
-    private readonly horizonPositionFraction: number = 0.666;
 
     protected override validateExternalData(_: void): boolean {
         return true;
@@ -66,12 +68,12 @@ export class BuildingsVisualComponent extends BaseVisualDirective<void> {
 
     protected override update(): void {
         const maxDimension = this.getMaxDimension();
-        const horizonPosition = maxDimension * this.horizonPositionFraction;
+        const horizonPosition = this.height * this.horizonPositionFraction;
 
         this.svg
             .attr('width', maxDimension)
-            .attr('height', maxDimension)
-            .attr('viewBox', `0 0 ${maxDimension} ${maxDimension}`)
+            .attr('height', this.height)
+            .attr('viewBox', `0 0 ${maxDimension} ${this.height}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
         this.horizonHouse.attr(

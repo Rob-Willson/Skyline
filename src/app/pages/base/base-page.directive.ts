@@ -9,6 +9,8 @@ export abstract class BasePageDirective implements OnInit {
     public width!: number;
     public height!: number;
 
+    public readonly horizonPositionFraction: number = 0.75;
+
     protected resizeObserver!: ResizeObserver;
 
     protected readonly elementRef: ElementRef = inject(ElementRef);

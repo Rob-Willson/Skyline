@@ -48,8 +48,10 @@ export class ConversationService {
         {
             id: `main`,
             cases: [
-                { input: `who are you?`, output: `I'm a manifestation of Rob's underemployment.` } as ConversationCase,
                 { input: `stars`, output: `Aren't they beautiful? You can change the number of stars if you wish. Well... not just by wishing, there's a settings menu, of course.` } as ConversationCase,
+                { input: `who are you?`, output: `I'm a manifestation of Rob's underemployment.` } as ConversationCase,
+                { input: `goodbye`, output: `Goodbye for now!`, goToStateId: `0` } as ConversationCase,
+                { input: `goodbye`, output: `Goodbye for now!`, goToStateId: `0` } as ConversationCase,
                 { input: `goodbye`, output: `Goodbye for now!`, goToStateId: `0` } as ConversationCase,
             ],
         } as ConversationState,

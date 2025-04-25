@@ -3,17 +3,19 @@
         width: 100vw;
         display: flex;
         flex-direction: column;
-        gap: 100px;
 
         &__inputs {
             display: flex;
-            gap: 20px;
-            min-height: 40px;
+            gap: 12px;
+            height: 140px;
             justify-content: center;
             pointer-events: auto;
 
             &__bubble-wrapper {
                 &__bubble {
+
+
+
                     pointer-events: auto;
                 }
             }
@@ -25,8 +27,9 @@
 
             &__text {
                 text-align: center;
-                height: 100px;
-                width: 80vw;
+                // height: 100px;
+                width: 90%;
+                max-width: 500px;
                 margin: auto;
             }
         }

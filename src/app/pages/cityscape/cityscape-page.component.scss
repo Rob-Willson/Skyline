@@ -6,23 +6,34 @@
 
         &__layer {
             position: absolute;
-            top: 50%;
-            left: 50%;
             transform: translate(-50%, -50%);
             width: auto;
             height: auto;
 
-            &--sky {
+            &__sky {
                 z-index: 0;
+                top: 50%;
+                left: 50%;
             }
 
-            &--buildings {
+            &__buildings {
                 z-index: 10;
+                top: 50%;
+                left: 50%;
             }
+        }
 
-            &--bubbles {
-                z-index: 20;
-            }
+        &__conversation {
+            position: absolute;
+            top: calc(75% - 60px);
+
+            justify-content: flex-end;
+            flex-direction: column;
+        }
+
+        // TODO: should actually be inside an overlay container, attached to one of the header buttons
+        &__options {
+            position: absolute;
         }
     }
 }

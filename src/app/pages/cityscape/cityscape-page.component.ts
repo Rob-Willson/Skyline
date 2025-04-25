@@ -110,10 +110,8 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
         this.conversationService.fetchConversationState()
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
-                next: ((data: ConversationState) => {
-                    console.log("pop", data);
-                    this.conversationState = data;
-                    this.changeDetectorRef.markForCheck();  // TODO: check if required
+                next: ((state: ConversationState) => {
+                    this.conversationState = state;
                 })
             });
     }

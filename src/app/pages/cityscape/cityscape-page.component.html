@@ -3,30 +3,33 @@
         [data]="starData"
         [width]="width"
         [height]="height"
-        class="cityscape-page__container__layer cityscape-page__container__layer--sky"
+        [horizonPositionFraction]="horizonPositionFraction"
+        class="cityscape-page__container__layer cityscape-page__container__layer__sky"
     ></sky-visual>
     
     <buildings-visual
         [data]="undefined"
         [width]="width"
         [height]="height"
-        class="cityscape-page__container__layer cityscape-page__container__layer--buildings"
+        [horizonPositionFraction]="horizonPositionFraction"
+        class="cityscape-page__container__layer cityscape-page__container__layer__buildings"
     ></buildings-visual>
+
+    <div class="cityscape-page__container__conversation">
+        <conversation-bubbles
+            [data]="conversationState"
+            [width]="width"
+            [height]="height"
+            (select)="onConversationSelect($event)"
+            class="cityscape-page__container__conversation"
+        ></conversation-bubbles>
+    </div>
 
     <options-menu
         [form]="form"
         [formConfig]="formConfig"
         (submit)="onSubmit()"
         (reset)="onReset()"
+        class="cityscape-page__container__options"
     ></options-menu>
-
-    <conversation-bubbles
-        [data]="conversationState"
-        [width]="width"
-        [height]="height"
-        (select)="onConversationSelect($event)"
-        class="cityscape-page__container__layer cityscape-page__container__layer--bubbles"
-    ></conversation-bubbles>
-
-
 </div>
