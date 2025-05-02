@@ -6,7 +6,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BasePageDirective } from '../base/base-page.directive';
 import { BuildingsVisualComponent } from '../../molecules/buildings-visual/buildings-visual.component';
 import { OptionsMenuComponent } from "../../organisms/options-menu/options-menu.component";
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormItemConfig } from '../../shared/types/form.model';
 import { debounceTime } from 'rxjs';
 import { ConversationCase, ConversationState } from '../../shared/types/conversation.model';
@@ -65,7 +65,12 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     }
 
     public onReset(): void {
-        this.form.reset(this.getDefaultFormValues());
+        const defaultValues = this.formConfig.reduce((acc, item) => {
+            acc[item.formControlName] = item.defaultValue;
+            return acc;
+        }, {} as Record<string, any>);
+
+        this.form.reset(defaultValues);
     }
 
     public onConversationSelect(data: ConversationCase): void {
@@ -74,24 +79,40 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     }
 
     private getOptionsForm(): void {
-        const defaults = this.getDefaultFormValues();
+        this.formConfig = this.getFormConfig();
 
-        this.form = this.formBuilder.group({
-            starCount: [defaults.starCount, [Validators.required, Validators.min(this.minStars), Validators.max(this.maxStars)]],
-            showMoon: [defaults.showMoon],
-        });
+        const formGroupConfig: { [key: string]: FormControl } = {};
 
-        this.formConfig = [
-            { formControlName: 'showMoon', label: 'Show moon', type: 'toggle' },
-            { formControlName: 'starCount', label: 'Star count', type: 'slider', min: this.minStars, max: this.maxStars, step: this.starCountStep },
-        ];
+        for (const item of this.formConfig) {
+            formGroupConfig[item.formControlName] = new FormControl(
+                { value: item.defaultValue, disabled: item.disabled ?? false },
+                item.validators ?? []
+            );
+        }
+
+        this.form = this.formBuilder.group(formGroupConfig);
     }
 
-    private getDefaultFormValues(): { starCount: number; showMoon: boolean } {
-        return {
-            starCount: 150,
-            showMoon: true,
-        };
+    private getFormConfig(): FormItemConfig[] {
+        return [
+            {
+                formControlName: 'starCount',
+                label: 'Star count',
+                type: 'slider',
+                defaultValue: 150,
+                min: this.minStars,
+                max: this.maxStars,
+                step: this.starCountStep,
+                validators: [Validators.required, Validators.min(this.minStars), Validators.max(this.maxStars)],
+            },
+            {
+                formControlName: 'showMoon',
+                label: 'Show moon',
+                type: 'toggle',
+                defaultValue: true,
+                disabled: true,
+            },
+        ];
     }
 
     private getStarData(): void {

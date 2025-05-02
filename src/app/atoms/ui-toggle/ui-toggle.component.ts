@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, HostBinding, Input, Output } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { UiBaseControlValueAccessor } from '../ui-control-value-accessor/ui-control-value-accessor';
@@ -19,6 +19,11 @@ import { UiBaseControlValueAccessor } from '../ui-control-value-accessor/ui-cont
     changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class UiToggleComponent extends UiBaseControlValueAccessor<boolean> {
+    @HostBinding('class.ui-toggle--disabled')
+    public get isDisabled(): boolean {
+        return this.disabled;
+    }
+
     @Input({ required: true })
     public label!: string;
 

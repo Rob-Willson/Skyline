@@ -33,4 +33,8 @@
             align-self: center;
         }
     }
+
+    &--disabled {
+        pointer-events: none;
+    }
 }

@@ -15,15 +15,13 @@
         class="cityscape-page__container__layer cityscape-page__container__layer__buildings"
     ></buildings-visual>
 
-    <div class="cityscape-page__container__conversation">
-        <conversation-bubbles
-            [data]="conversationState"
-            [width]="width"
-            [height]="height"
-            (select)="onConversationSelect($event)"
-            class="cityscape-page__container__conversation"
-        ></conversation-bubbles>
-    </div>
+    <conversation-bubbles
+        [data]="conversationState"
+        [width]="width"
+        [height]="height"
+        (select)="onConversationSelect($event)"
+        class="cityscape-page__container__conversation"
+    ></conversation-bubbles>
 
     <options-menu
         [form]="form"

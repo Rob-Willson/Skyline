@@ -1,5 +1,5 @@
 import { NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, Input, Output, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, forwardRef, HostBinding, Input, Output, ViewEncapsulation } from '@angular/core';
 import { NG_VALUE_ACCESSOR } from '@angular/forms';
 import { MatSliderModule } from '@angular/material/slider';
 import { UiBaseControlValueAccessor } from '../ui-control-value-accessor/ui-control-value-accessor';
@@ -21,6 +21,11 @@ import { UiBaseControlValueAccessor } from '../ui-control-value-accessor/ui-cont
     encapsulation: ViewEncapsulation.None,
 })
 export class UiSliderComponent extends UiBaseControlValueAccessor<number> {
+    @HostBinding('class.ui-slider--disabled')
+    public get isDisabled(): boolean {
+        return this.disabled;
+    }
+
     @Input({required: true})
     public min!: number;
 
