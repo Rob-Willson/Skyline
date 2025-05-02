@@ -3,7 +3,7 @@
     "version": 1,
     "newProjectRoot": "projects",
     "projects": {
-        "data-visualisation-app": {
+        "skyline-app": {
             "projectType": "application",
             "schematics": {
                 "@schematics/angular:component": {
@@ -21,7 +21,7 @@
                 "build": {
                     "builder": "@angular-devkit/build-angular:application",
                     "options": {
-                        "outputPath": "dist/data-visualisation-app",
+                        "outputPath": "dist/skyline-app",
                         "index": "src/index.html",
                         "browser": "src/main.ts",
                         "polyfills": [
@@ -58,7 +58,8 @@
                                     "maximumError": "8kB"
                                 }
                             ],
-                            "outputHashing": "all"
+                            "outputHashing": "all",
+                            "baseHref": "/Skyline/"
                         },
                         "development": {
                             "optimization": false,
@@ -72,10 +73,10 @@
                     "builder": "@angular-devkit/build-angular:dev-server",
                     "configurations": {
                         "production": {
-                            "buildTarget": "data-visualisation-app:build:production"
+                            "buildTarget": "skyline-app:build:production"
                         },
                         "development": {
-                            "buildTarget": "data-visualisation-app:build:development"
+                            "buildTarget": "skyline-app:build:development"
                         }
                     },
                     "defaultConfiguration": "development"
@@ -107,6 +108,9 @@
                         },
                         "scripts": []
                     }
+                },
+                "deploy": {
+                  "builder": "angular-cli-ghpages:deploy"
                 }
             }
         }
