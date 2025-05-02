@@ -42,8 +42,6 @@ export class ConversationBubblesComponent extends BaseVisualDirective<Conversati
     
         const yOffset = (1 - Math.cos(angle)) * radius;
     
-        console.log(i, yOffset);
-
         return {
             'margin-top': `${yOffset}px`
         };

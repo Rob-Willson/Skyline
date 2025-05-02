@@ -13,13 +13,10 @@ export class ConversationService {
     }
 
     public update(data: ConversationCase): void {
-        console.log("ConversationService | update(): ", data);
-
         const changeState = data.goToStateId !== undefined;
 
         if (changeState) {
             this.currentState = this.getStateById(data.goToStateId) ?? this.getEntryState();
-            console.log("ConversationService | update(): changing state", this.currentState);
         }
     }
 

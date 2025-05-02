@@ -21,7 +21,6 @@ export abstract class UiBaseControlValueAccessor<T> implements ControlValueAcces
     }
 
     public setDisabledState?(isDisabled: boolean): void {
-        console.log("setDisabledState()", isDisabled, this.value);
         this.disabled = isDisabled;
         this.changeDetectorRef.markForCheck();
     }
