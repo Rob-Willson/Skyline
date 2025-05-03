@@ -8,7 +8,7 @@ import { PointMagnitude } from '../shared/types/point.model';
 export class StarsService {
     private mockStarData: PointMagnitude[] = [];
 
-    private readonly maxStarCount: number = 300;
+    private readonly maxStarCount: number = 500;   // Arbitrary maximum
 
     public fetchStarData(count: number): Observable<PointMagnitude[]> {
         if (this.mockStarData.length === 0) {

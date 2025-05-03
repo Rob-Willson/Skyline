@@ -4,7 +4,7 @@
 
         display: flex;
         align-items: center;
-        gap: 4px;
+        gap: 6px;
         background: none;
         padding: 6px 12px;
         border: var(--border-width) solid transparent;   // HERE
@@ -33,6 +33,7 @@
 
         &__label-container {
             width: max-content;
+            margin-top: 2px;
 
             &__label {
                 white-space: pre;   // Ensures that spans containing only spaces aren't width 0

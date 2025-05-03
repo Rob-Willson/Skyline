@@ -29,8 +29,8 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
 
     private readonly debounceDelayMillis: number = 300;
 
-    private readonly minStars: number = 50;
-    private readonly maxStars: number = 300;
+    private readonly minStars: number = 100;
+    private readonly maxStars: number = 400;
     private readonly starCountStep: number = 25;
 
     public constructor(
@@ -101,7 +101,7 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
                 formControlName: 'starCount',
                 label: 'Star count',
                 type: 'slider',
-                defaultValue: 150,
+                defaultValue: 200,
                 min: this.minStars,
                 max: this.maxStars,
                 step: this.starCountStep,
