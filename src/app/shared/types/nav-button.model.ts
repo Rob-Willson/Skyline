@@ -6,3 +6,7 @@ export interface NavButton {
     showLabelOnHover: boolean;
     iconName: string;
 }
+
+export interface NavButtonClickEvent extends NavButton {
+    element: HTMLElement;
+}

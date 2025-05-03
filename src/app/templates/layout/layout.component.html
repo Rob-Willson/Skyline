@@ -1,13 +1,17 @@
 <div class="layout-container">
-    <main class="content">
-        <router-outlet></router-outlet>
-    </main>
-
     <header-section
         class="header"
         [siteName]="siteName"
         [pageTitle]="pageTitle"
+        (navButtonClicked)="onNavButtonClicked($event)"
     ></header-section>
 
-    <footer-section class="footer"></footer-section>
+    <main class="content">
+        <router-outlet></router-outlet>
+    </main>
+
+    <footer-section
+        (navButtonClicked)="onNavButtonClicked($event)"
+        class="footer"
+    ></footer-section>
 </div>

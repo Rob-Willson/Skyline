@@ -1,5 +1,5 @@
 import { CommonModule, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output, Inject, Optional, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { UiButtonComponent } from "../../atoms/ui-button/ui-button.component";
 import { UiToggleComponent } from '../../atoms/ui-toggle/ui-toggle.component';
@@ -7,18 +7,18 @@ import { UiSliderComponent } from '../../atoms/ui-slider/ui-slider.component';
 import { FormItemConfig, FormSliderConfig, FormToggleConfig } from '../../shared/types/form.model';
 
 @Component({
-  selector: 'options-menu',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, UiButtonComponent, UiToggleComponent, UiSliderComponent, NgIf],
-  templateUrl: './options-menu.component.html',
-  styleUrl: './options-menu.component.scss',
-changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'options-menu',
+    standalone: true,
+    imports: [CommonModule, ReactiveFormsModule, UiButtonComponent, UiToggleComponent, UiSliderComponent, NgIf],
+    templateUrl: './options-menu.component.html',
+    styleUrl: './options-menu.component.scss',
+    changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OptionsMenuComponent {
-    @Input({required: true})
+    @Input({ required: true })
     public form!: FormGroup;
 
-    @Input({required: true})
+    @Input({ required: true })
     public formConfig!: FormItemConfig[];
 
     @Output()
@@ -26,6 +26,14 @@ export class OptionsMenuComponent {
 
     @Output()
     public reset: EventEmitter<void> = new EventEmitter();
+
+    constructor(
+        @Optional() @Inject(FormGroup) form: FormGroup,
+        @Optional() @Inject('formConfig') formConfig: FormItemConfig[]      // TODO: magic string?
+    ) {
+        this.form = form;
+        this.formConfig = formConfig;
+    }
 
     public onSubmit(): void {
         console.log("submitting form...", this.form);

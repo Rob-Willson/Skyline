@@ -1,6 +1,6 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ElementRef } from '@angular/core';
 import { UiButtonComponent } from "../../atoms/ui-button/ui-button.component";
-import { NavButton } from '../../shared/types/nav-button.model';
+import { NavButton, NavButtonClickEvent } from '../../shared/types/nav-button.model';
 import { NgFor, AsyncPipe } from '@angular/common';
 import { NavigationService } from '../../services/navigation.service';
 import { Observable } from 'rxjs';
@@ -21,11 +21,18 @@ export class HeaderComponent {
     public pageTitle!: string;
 
     @Output()
-    public navButtonClicked : EventEmitter<NavButton> = new EventEmitter<NavButton>();
+    public navButtonClicked: EventEmitter<NavButtonClickEvent> = new EventEmitter<NavButtonClickEvent>();
 
     readonly navButton$!: Observable<NavButton[]>;
 
     public constructor(private readonly navService: NavigationService) {
         this.navButton$ = this.navService.headerButton$;
+    }
+
+    public onNavButtonClick(button: NavButton, element: any): void {
+        this.navButtonClicked.emit({
+            ...button,
+            element,
+        });
     }
 }

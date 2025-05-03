@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy, Output, EventEmitter } from '@angul
 import { UiButtonComponent } from "../../atoms/ui-button/ui-button.component";
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { Observable } from 'rxjs';
-import { NavButton } from '../../shared/types/nav-button.model';
+import { NavButton, NavButtonClickEvent } from '../../shared/types/nav-button.model';
 import { NavigationService } from '../../services/navigation.service';
 
 @Component({
@@ -15,7 +15,7 @@ import { NavigationService } from '../../services/navigation.service';
 })
 export class FooterComponent {
     @Output()
-    public navButtonClicked : EventEmitter<NavButton> = new EventEmitter<NavButton>();
+    public navButtonClicked: EventEmitter<NavButtonClickEvent> = new EventEmitter<NavButtonClickEvent>();
 
     readonly navButton$!: Observable<NavButton[]>;
 

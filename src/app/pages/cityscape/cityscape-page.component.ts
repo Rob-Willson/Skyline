@@ -1,22 +1,24 @@
-import { Component, ChangeDetectionStrategy, OnInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectionStrategy, OnInit, OnDestroy, ViewContainerRef, Injector, InjectionToken } from '@angular/core';
 import { SkyVisualComponent } from "../../molecules/sky-visual/sky-visual.component";
 import { PointMagnitude } from '../../shared/types/point.model';
 import { StarsService } from '../../services/stars.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { BasePageDirective } from '../base/base-page.directive';
 import { BuildingsVisualComponent } from '../../molecules/buildings-visual/buildings-visual.component';
-import { OptionsMenuComponent } from "../../organisms/options-menu/options-menu.component";
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormItemConfig } from '../../shared/types/form.model';
 import { debounceTime } from 'rxjs';
 import { ConversationCase, ConversationState } from '../../shared/types/conversation.model';
 import { ConversationBubblesComponent } from '../../molecules/conversation-bubbles/conversation-bubbles.component';
 import { ConversationService } from '../../services/conversation.service';
+import { OverlayService } from '../../services/overlay.service';
+import { OptionsMenuComponent } from '../../organisms/options-menu/options-menu.component';
+import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
     selector: 'cityscape-page',
     standalone: true,
-    imports: [SkyVisualComponent, BuildingsVisualComponent, OptionsMenuComponent, ConversationBubblesComponent],
+    imports: [SkyVisualComponent, BuildingsVisualComponent, ConversationBubblesComponent],
     templateUrl: './cityscape-page.component.html',
     styleUrl: './cityscape-page.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -34,6 +36,10 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     private readonly starCountStep: number = 25;
 
     public constructor(
+        private readonly overlay: Overlay,
+        private readonly overlayService: OverlayService,
+        private readonly viewContainerRef: ViewContainerRef,
+        private readonly injector: Injector,
         private readonly starsService: StarsService,
         private readonly formBuilder: FormBuilder,
         private readonly conversationService: ConversationService,
@@ -54,18 +60,28 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
                 takeUntilDestroyed(this.destroyRef),
             )
             .subscribe((values) => this.onFormChange(values));
+
+        this.navService.navButtonClick$
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe((button) => {
+                if (button.id === 'settings') {
+                    this.openOptionsOverlay(button.element);
+                }
+            });
     }
 
-    private onFormChange(values: { showMoon: boolean, starCount: number, fastStars: boolean }): void {
+    private onFormChange(values: { showMoon: boolean, starCount: number }): void {
         if (this.starCount != this.starData.length) {
             this.getStarData();
         }
     }
 
+    // TODO: this is not currently called, but should be when the form is submitted
     public onSubmit(): void {
         console.log("onSubmit...", this.form.value);
     }
 
+    // TODO: this is not currently called, but should be when the form is reset
     public onReset(): void {
         const defaultValues = this.formConfig.reduce((acc, item) => {
             acc[item.formControlName] = item.defaultValue;
@@ -78,6 +94,42 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     public onConversationSelect(data: ConversationCase): void {
         this.conversationService.update(data);
         this.getConversationData();
+    }
+
+    private openOptionsOverlay(origin: HTMLElement): void {
+        const positionStrategy = this.overlay.position()
+            .flexibleConnectedTo(origin)
+            .withPositions([
+                {
+                    originX: 'start', originY: 'bottom',
+                    overlayX: 'start', overlayY: 'top',
+                }
+            ])
+            .withFlexibleDimensions(false)
+            .withGrowAfterOpen(false)
+            .withPush(true);    // Let overlay be pushed onto screen if position strategy fails
+
+        const inputInjector = Injector.create({
+            providers: [
+                { provide: FormGroup, useValue: this.form },            // TODO: should use InjectionToken
+                { provide: 'formConfig', useValue: this.formConfig },   // TODO: magic string, should use InjectionToken?
+            ],
+            parent: this.injector,
+        });
+
+        const { overlayRef, componentRef } = this.overlayService.open(OptionsMenuComponent, {
+            viewContainerRef: this.viewContainerRef,
+            injector: inputInjector,
+            positionStrategy,
+        });
+
+        componentRef.instance.submit
+            // .pipe(takeUntilDestroyed(this.destroyRef))   // TODO: I don't think this is right, it needs to respect the lifecycle of the overlay surely?
+            .subscribe(() => this.onSubmit());
+
+        componentRef.instance.reset
+            // .pipe(takeUntilDestroyed(this.destroyRef))   // TODO: I don't think this is right, it needs to respect the lifecycle of the overlay surely?
+            .subscribe(() => this.onReset());
     }
 
     private getOptionsForm(): void {

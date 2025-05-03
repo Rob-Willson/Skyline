@@ -6,6 +6,8 @@ import { filter, map } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import { HeaderComponent } from "../../organisms/header/header.component";
 import { FooterComponent } from "../../organisms/footer/footer.component";
+import { NavButton, NavButtonClickEvent } from '../../shared/types/nav-button.model';
+import { NavigationService } from '../../services/navigation.service';
 
 @Component({
     selector: 'layout',
@@ -27,6 +29,7 @@ export class LayoutComponent implements OnInit {
         private readonly router: Router,
         private readonly activatedRoute: ActivatedRoute,
         private readonly titleService: Title,
+        private readonly navService: NavigationService,
     ) { }
 
     public ngOnInit(): void {
@@ -40,5 +43,9 @@ export class LayoutComponent implements OnInit {
                 const newTitle: string = `${this.siteName} | ${this.pageTitle}`;
                 this.titleService.setTitle(newTitle);
             });
+    }
+
+    public onNavButtonClicked(button: NavButtonClickEvent): void {
+        this.navService.emitNavButtonClick(button);
     }
 }

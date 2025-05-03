@@ -32,9 +32,10 @@
                 [label]="'Reset'"
                 [ariaLabel]="'Reset'"
                 [iconName]="'cancel'"
-                [type]="'reset'"
+                [type]="'button'"
                 [hideLabel]="true"
                 [showLabelOnHover]="true"
+                (buttonClicked)="reset.emit()"
                 class="options-menu__container__form__button-group__button"
             ></ui-button>
             <ui-button

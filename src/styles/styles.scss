@@ -1,6 +1,8 @@
 @use '@angular/material' as mat;
 @use 'animations';
 
+@import '@angular/cdk/overlay-prebuilt.css';
+
 @include mat.core();
 
 // This palette is based on the Angular Material $cyan-palette

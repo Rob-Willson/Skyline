@@ -1,8 +1,8 @@
 import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter, ElementRef, OnInit, inject, DestroyRef, ViewChild, HostBinding, ViewEncapsulation } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { NavButton } from '../../shared/types/nav-button.model';
-import { select, selectAll, transition } from 'd3';
+import { NavButtonClickEvent } from '../../shared/types/nav-button.model';
+import { select } from 'd3';
 import { Subject, debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -26,10 +26,10 @@ export class UiButtonComponent implements OnInit {
         return this.disabled;
     }
 
-    @Input({required: true})
+    @Input({ required: true })
     public label!: string;
 
-    @Input({required: true})
+    @Input({ required: true })
     public ariaLabel!: string;
 
     @Input()
@@ -48,7 +48,7 @@ export class UiButtonComponent implements OnInit {
     public disabled: boolean = false;
 
     @Output()
-    public buttonClicked: EventEmitter<NavButton> = new EventEmitter();
+    public buttonClicked: EventEmitter<NavButtonClickEvent> = new EventEmitter();
 
     private labelUpdate$ = new Subject<boolean>();
     private readonly destroyRef = inject(DestroyRef);
@@ -59,7 +59,7 @@ export class UiButtonComponent implements OnInit {
     private readonly labelAppearDelayMillis: number = 150;
     private readonly labelDisappearDelayMillis: number = 110;
 
-    public constructor(private readonly elementRef: ElementRef) {}
+    public constructor(public readonly elementRef: ElementRef) { }
 
     public ngOnInit(): void {
         this.labelUpdate$.pipe(
@@ -89,7 +89,15 @@ export class UiButtonComponent implements OnInit {
             return;
         }
 
-        this.buttonClicked.emit();
+        this.buttonClicked.emit({
+            id: this.label.toLowerCase(),
+            label: this.label,
+            ariaLabel: this.ariaLabel,
+            hideLabel: this.hideLabel,
+            showLabelOnHover: this.showLabelOnHover,
+            iconName: this.iconName,
+            element: this.elementRef.nativeElement,
+        } as NavButtonClickEvent);
     }
 
     private updateLabelText(show: boolean): void {
@@ -114,7 +122,7 @@ export class UiButtonComponent implements OnInit {
             .delay((d: string, i: number, arr: unknown[]) => i * (this.labelAppearDelayMillis / arr.length))
             .style('opacity', 1)
             .style('display', 'inline-block')
-        
+
         this.letterSpans
             .transition()
             .text((d: string) => d)

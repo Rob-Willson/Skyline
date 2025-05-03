@@ -6,12 +6,13 @@
     <nav class="header__nav">
         <ui-button
             *ngFor="let button of navButton$ | async"
+            #uiButtonComponent
             [label]="button.label"
             [ariaLabel]="button.ariaLabel"
             [iconName]="button.iconName"
             [hideLabel]="button.hideLabel"
             [showLabelOnHover]="button.showLabelOnHover"
-            (buttonClicked)="navButtonClicked.emit(button)"
+            (buttonClicked)="onNavButtonClick($event, uiButtonComponent.elementRef.nativeElement)"
         ></ui-button>
     </nav>
 </header>
