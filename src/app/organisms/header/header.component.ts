@@ -26,6 +26,6 @@ export class HeaderComponent {
     readonly navButton$!: Observable<NavButton[]>;
 
     public constructor(private readonly navService: NavigationService) {
-        this.navButton$ =this.navService.headerButton$;
+        this.navButton$ = this.navService.headerButton$;
     }
 }

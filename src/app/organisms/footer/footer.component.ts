@@ -22,5 +22,4 @@ export class FooterComponent {
     public constructor(private readonly navService: NavigationService) {
         this.navButton$ = navService.footerButton$;
     }
-
 }

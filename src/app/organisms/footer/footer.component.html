@@ -2,11 +2,11 @@
     <nav class="footer__nav">
         <ui-button
             *ngFor="let button of navButton$ | async"
-            [label]="'Contact'"
+            [label]="button.label"
             [ariaLabel]="button.ariaLabel"
-            [iconName]="'email'"
-            [hideLabel]="true"
-            [showLabelOnHover]="true"
+            [iconName]="button.iconName"
+            [hideLabel]="button.hideLabel"
+            [showLabelOnHover]="button.showLabelOnHover"
         ></ui-button>
     </nav>
 </footer>

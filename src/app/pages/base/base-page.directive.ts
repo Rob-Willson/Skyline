@@ -47,13 +47,14 @@ export abstract class BasePageDirective implements OnInit {
 
     private getDefaultHeaderButtons(): NavButton[] {
         return [
-            { id: 'about', label: 'About', ariaLabel: 'About', iconName:'help', hideLabel: true, showLabelOnHover: true }
+            { id: 'settings', label: 'Settings', ariaLabel: 'Settings', iconName:'settings', hideLabel: true, showLabelOnHover: true }
         ];
     }
     
     private getDefaultFooterButtons(): NavButton[] {
         return [
-            { id: 'contact', label: 'Contact', ariaLabel: 'Contact', iconName:'email', hideLabel: true, showLabelOnHover: true }
+            { id: 'contact', label: 'Contact', ariaLabel: 'Contact', iconName:'email', hideLabel: true, showLabelOnHover: true },
+            { id: 'todo', label: 'Todo', ariaLabel: 'Todo', iconName:'list', hideLabel: true, showLabelOnHover: true }
         ];
     }
 }

@@ -10,7 +10,7 @@ export class NavigationService {
     public readonly headerButton$ = this.headerButtons.asObservable();
 
     private footerButtons = new BehaviorSubject<NavButton[]>([]);
-    public readonly footerButton$ = this.headerButtons.asObservable();
+    public readonly footerButton$ = this.footerButtons.asObservable();
 
     public setHeaderButtons(buttons: NavButton[]): void {
         this.headerButtons.next(buttons);
