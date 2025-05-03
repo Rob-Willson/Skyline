@@ -34,7 +34,8 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
     private horizonGlareLower!: any;
     private horizonGlareUpper!: any;
     private horizonLine!: any;
-    private starsContainer!: any;
+    private starsPositionContainer!: any;
+    private starsRotationContainer!: any;
     private stars!: any;
     private sunAndMoonContainer!: any;
     private moonContainer!: any;
@@ -63,13 +64,13 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
     }
 
     protected override update(): void {
-        const maxDimension = this.getMaxDimension();
-        const horizonPosition = this.height * this.horizonPositionFraction;
+        const maxDimension = this.getMaxDimensionExpanded();
+        const horizonPosition = this.getHorizonPosition();
 
         this.svg
             .attr('width', maxDimension)
-            .attr('height', this.height)
-            .attr('viewBox', `0 0 ${maxDimension} ${this.height}`)
+            .attr('height', maxDimension)
+            .attr('viewBox', `0 0 ${maxDimension} ${maxDimension}`)
             .attr('preserveAspectRatio', 'xMidYMid meet');
 
         this.defsClipPathRect
@@ -106,9 +107,9 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
             .attr('x2', maxDimension)
             .attr('y2', horizonPosition);
 
-        this.starsContainer.data([this.data]);
+        this.starsRotationContainer.data([this.data]);
 
-        this.stars = this.starsContainer
+        this.stars = this.starsRotationContainer
             .selectAll('g')
             .data(
                 (d: PointMagnitude[]) => d,
@@ -193,9 +194,12 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
     }
 
     private generateSvgElements(): void {
-        this.starsContainer = this.svg
+        this.starsPositionContainer = this.svg
             .append('g')
-            .attr('class', SkyVisualClasses.starsGroup);
+            .attr('class', SkyVisualClasses.starsPositionGroup);
+        this.starsRotationContainer = this.starsPositionContainer
+            .append('g')
+            .attr('class', SkyVisualClasses.starsRotationGroup);
 
         this.horizonGlareContainer = this.svg
             .append('g')
@@ -235,12 +239,16 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
 
     private startLuminaryRotations(): void {
         timer((elapsed) => {
-            const maxDimension = this.getMaxDimension();
-
-            const cx = maxDimension * 0.5;
-            const cy = maxDimension * this.horizonPositionFraction;
             const starsRotationAngle = (elapsed * 0.001) % 360;
-            this.starsContainer.attr('transform', `rotate(${starsRotationAngle}, ${cx}, ${cy})`);
+
+            const maxDimension = this.getMaxDimensionExpanded();
+            const centerVsHorizonYPosDelta: number = this.getCenterVsHorizonYPosDelta();
+
+            // Offset outer stars container so that it's centred on the horizon
+            this.starsPositionContainer.attr('transform', `translate(0, ${centerVsHorizonYPosDelta})`)
+
+            // Rotate inner stars container around its center
+            this.starsRotationContainer.attr('transform', `rotate(${starsRotationAngle}, ${maxDimension / 2}, ${maxDimension / 2})`);
 
             const moonRotationAngle = (elapsed * 0.005) % 360;
             this.moonContainer.attr(
@@ -251,7 +259,20 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
         });
     }
 
-    private getMaxDimension = (): number => {
-        return Math.sqrt(Math.pow(this.width, 2) + Math.pow(this.height, 2));
+    // Working with the expanded size is important because the stars container is offset and rotated
+    private getMaxDimensionExpanded = (): number => {
+        const maxDimension: number = Math.max(this.width, this.height);
+        const maxDimensionExpanded = Math.sqrt(Math.pow(maxDimension, 2) * 2);
+        return maxDimensionExpanded;
+    }
+
+    private getHorizonPosition = (): number => {
+        const excessHeight: number = this.getMaxDimensionExpanded() - this.height;
+        const horizonPosition = this.height * this.horizonPositionFraction + (excessHeight / 2);
+        return horizonPosition;
+    }
+
+    private getCenterVsHorizonYPosDelta = (): number => {
+        return this.getHorizonPosition() - (this.getMaxDimensionExpanded() / 2)
     }
 }

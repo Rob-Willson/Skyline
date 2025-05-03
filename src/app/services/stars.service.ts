@@ -29,7 +29,7 @@ export class StarsService {
           data.push({
             x: +(Math.random().toFixed(2)),
             y: +(Math.random().toFixed(2)),
-            magnitude: +(Math.random() * 3.5 + 1.0).toFixed(2), // Range: 0.5 to 4.0
+            magnitude: +(Math.random() * 4.0 + 1.0).toFixed(2),
           });
         }
       

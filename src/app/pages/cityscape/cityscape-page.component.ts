@@ -56,8 +56,10 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
             .subscribe((values) => this.onFormChange(values));
     }
 
-    private onFormChange(values: { showMoon: boolean, starCount: number }): void {
-        this.getStarData();
+    private onFormChange(values: { showMoon: boolean, starCount: number, fastStars: boolean }): void {
+        if (this.starCount != this.starData.length) {
+            this.getStarData();
+        }
     }
 
     public onSubmit(): void {
