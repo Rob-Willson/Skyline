@@ -251,9 +251,12 @@ export class SkyVisualComponent extends BaseVisualDirective<PointMagnitude[]> {
             this.starsRotationContainer.attr('transform', `rotate(${starsRotationAngle}, ${maxDimension / 2}, ${maxDimension / 2})`);
 
             const moonRotationAngle = (elapsed * 0.005) % 360;
+            const moonOffset = this.width > this.height
+                ? this.height * 0.45
+                : this.height * 0.4;
             this.moonContainer.attr(
                 'transform',
-                `rotate(${moonRotationAngle}) translate(-${maxDimension * 0.25}, ${maxDimension * 0.25})`
+                `rotate(${moonRotationAngle}) translate(-${moonOffset}, ${moonOffset})`
             );
             this.moonText.attr('transform', `rotate(-${moonRotationAngle})`);
         });
