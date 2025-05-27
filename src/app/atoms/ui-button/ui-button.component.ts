@@ -3,7 +3,7 @@ import { NgIf } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
 import { NavButtonClickEvent } from '../../shared/types/nav-button.model';
 import { select } from 'd3';
-import { Subject, debounceTime } from 'rxjs';
+import { BehaviorSubject, Subject, debounceTime } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -24,6 +24,11 @@ export class UiButtonComponent implements OnInit {
     @HostBinding('class.ui-button--disabled')
     public get isDisabled(): boolean {
         return this.disabled;
+    }
+
+    @HostBinding('class.ui-button--border')
+    public get showBorder(): boolean {
+        return !this.hideBorder || (this.showBorderOnHover && this.labelUpdate$.value);
     }
 
     @Input({ required: true })
@@ -47,10 +52,16 @@ export class UiButtonComponent implements OnInit {
     @Input()
     public disabled: boolean = false;
 
+    @Input()
+    public hideBorder: boolean = true;
+
+    @Input()
+    public showBorderOnHover: boolean = true;
+
     @Output()
     public buttonClicked: EventEmitter<NavButtonClickEvent> = new EventEmitter();
 
-    private labelUpdate$ = new Subject<boolean>();
+    private labelUpdate$ = new BehaviorSubject<boolean>(false);
     private readonly destroyRef = inject(DestroyRef);
 
     private labelContainer!: any;

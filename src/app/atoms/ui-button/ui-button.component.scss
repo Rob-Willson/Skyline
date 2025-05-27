@@ -7,7 +7,7 @@
         gap: 6px;
         background: none;
         padding: 6px 12px;
-        border: var(--border-width) solid transparent;   // HERE
+        border: var(--border-width) solid transparent;
         border-radius: var(--border-radius);
         font-size: var(--paragraph-font-size);
         color: var(--button-text-color);
@@ -48,6 +48,7 @@
     }
 
     &--disabled {
+        pointer-events: none;
         opacity: 0.5;
 
         .ui-button__container {
@@ -55,8 +56,13 @@
                 text-decoration: none;
                 background-color: transparent;
                 color: var(--button-text-color);
-                border-color: transparent;
             }
+        }
+    }
+
+    &--border {
+        .ui-button__container {
+            border-color: var(--button-border-color);
         }
     }
 }
