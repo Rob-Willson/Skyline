@@ -1,60 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ConversationCase, ConversationState } from '../shared/types/conversation.model';
-import { Observable, of } from 'rxjs';
-import { scaleSequential } from 'd3';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ConversationService {
-    private currentState!: ConversationState;
-
-    public fetchConversationState(): Observable<ConversationState> {
-        return of(this.currentState);
-    }
-
-    public start(): void {
-        this.currentState = this.entryConversationState;
-    }
-
-    public end(): void {
-        this.currentState = this.hiddenConversationState;
-    }
-
-    public update(selectedCase: ConversationCase): void {
-        const changeState = selectedCase.goToStateId !== undefined;
-
-        if (changeState) {
-            this.currentState = this.getStateById(selectedCase) ?? this.entryConversationState;
-        } else {
-            this.currentState.lastSelection = selectedCase;
-        }
-    }
-
-    private getStateById(selectedCase: ConversationCase): ConversationState {
-        if (selectedCase.goToStateId === undefined) {
-            return this.currentState;
-        }
-
-        const newStateUncloned = this.conversationStateData.find((state) => state.id === selectedCase.goToStateId);
-        if (!newStateUncloned) {
-            throw new Error(`ConversationService | getStateById(): could not find state id '${selectedCase.goToStateId}'`);
-        }
-
-        const newStateCloned = this.shallowCloneState(newStateUncloned);
-        newStateCloned.lastSelection = selectedCase;
-        return newStateCloned;
-    }
-
-    // We are treating ConversationCase as immutable, so a shallow clone here is fine.
-    // If that changes, this will need to be updated
-    private shallowCloneState(state: ConversationState): ConversationState {
-        return {
-            id: state.id,
-            cases: state.cases,
-        }
-    }
-
     private readonly hiddenConversationState: ConversationState = {
         id: `hidden`,
         cases: [],
@@ -86,4 +37,41 @@ export class ConversationService {
             ],
         },
     ];
+
+    private readonly state$ = new BehaviorSubject<ConversationState>(this.hiddenConversationState);
+    public readonly conversationState$: Observable<ConversationState> = this.state$.asObservable();
+
+    public start(): void {
+        this.state$.next(this.entryConversationState);
+    }
+
+    public hide(): void {
+        this.state$.next(this.hiddenConversationState);
+    }
+
+    public update(selectedCase: ConversationCase): void {
+        this.state$.next(this.constructNextStateById(selectedCase));
+    }
+
+    private constructNextStateById(selectedCase: ConversationCase): ConversationState {
+        if (selectedCase.goToStateId === undefined) {
+            return this.shallowCloneState(this.state$.value, selectedCase);
+        }
+
+        const newStateUncloned = this.conversationStateData.find((state) => state.id === selectedCase.goToStateId);
+        if (!newStateUncloned) {
+            throw new Error(`ConversationService | getStateById(): could not find state id '${selectedCase.goToStateId}'`);
+        }
+
+        return this.shallowCloneState(newStateUncloned, selectedCase);
+    }
+
+    // We are treating ConversationCase as immutable, so a shallow clone here is fine.
+    // If that changes, this will need to be updated
+    private shallowCloneState(state: ConversationState, selectedCase: ConversationCase): ConversationState {
+        return {
+            ...state,
+            lastSelection: selectedCase,
+        }
+    }
 }

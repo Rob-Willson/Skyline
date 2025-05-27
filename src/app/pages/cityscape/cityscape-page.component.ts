@@ -14,12 +14,11 @@ import { ConversationService } from '../../services/conversation.service';
 import { OverlayService } from '../../services/overlay.service';
 import { OptionsMenuComponent } from '../../organisms/options-menu/options-menu.component';
 import { Overlay } from '@angular/cdk/overlay';
-import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'cityscape-page',
     standalone: true,
-    imports: [SkyVisualComponent, BuildingsVisualComponent, ConversationBubblesComponent, NgIf],
+    imports: [SkyVisualComponent, BuildingsVisualComponent, ConversationBubblesComponent],
     templateUrl: './cityscape-page.component.html',
     styleUrl: './cityscape-page.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -95,16 +94,13 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     public toggleConversationDisplay(doShow: boolean): void {
         if (doShow) {
             this.conversationService.start();
-            this.getConversationData();
         } else {
-            this.conversationService.end();
-            this.getConversationData();
+            this.conversationService.hide();
         }
     }
 
     public onConversationSelect(selectedCase: ConversationCase): void {
         this.conversationService.update(selectedCase);
-        this.getConversationData();
     }
 
     private openOptionsOverlay(origin: HTMLElement): void {
@@ -193,7 +189,7 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
     }
 
     private getConversationData(): void {
-        this.conversationService.fetchConversationState()
+        this.conversationService.conversationState$
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe({
                 next: ((state: ConversationState) => {
