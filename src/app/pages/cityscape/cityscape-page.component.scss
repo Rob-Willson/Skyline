@@ -25,15 +25,10 @@
 
         &__conversation {
             position: absolute;
-            top: calc(75% - 120px);
+            top: calc(70% - 190px);
 
             justify-content: flex-end;
             flex-direction: column;
-        }
-
-        // TODO: should actually be inside an overlay container, attached to one of the header buttons
-        &__options {
-            position: absolute;
         }
     }
 }

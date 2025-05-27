@@ -1,4 +1,10 @@
 <div #containerElement class="conversation-bubbles__container">
+    <div class="conversation-bubbles__container__output">
+        <div class="conversation-bubbles__container__output__text">
+            {{lastSelection?.output ?? ''}}
+        </div>
+    </div>
+
     <div class="conversation-bubbles__container__inputs">
         <div
             *ngFor="let case of data.cases; let i = index"
@@ -15,12 +21,6 @@
                 (buttonClicked)="onSelect(case)"
                 class="conversation-bubbles__container__bubble-wrapper__bubble"
             ></ui-button>
-        </div>
-    </div>
-
-    <div class="conversation-bubbles__container__output">
-        <div class="conversation-bubbles__container__output__text">
-            {{lastSelection?.output ?? '...'}}
         </div>
     </div>
 </div>

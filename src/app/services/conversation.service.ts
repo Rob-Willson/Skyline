@@ -32,7 +32,7 @@ export class ConversationService {
         {
             id: '0',
             cases: [
-                { input: `hello?`, output: `Hello there! How are you?`, goToStateId: `how_are_you` } as ConversationCase,
+                { input: `hello`, output: `Hello there! How are you?`, goToStateId: `how_are_you` } as ConversationCase,
             ],
         } as ConversationState,
         {
