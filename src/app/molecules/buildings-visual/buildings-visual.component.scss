@@ -2,29 +2,88 @@
     0% {
         opacity: 0;
     }
+
     10% {
         opacity: 0.7;
     }
+
     100% {
         opacity: 1;
+    }
+}
+
+@keyframes fadeOutWindowOpacity {
+    0% {
+        opacity: 1;
+    }
+
+    90% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes doorOpenWidth {
+    0% {
+        width: 0px;
+    }
+
+    100% {
+        width: 7px;
+    }
+}
+
+@keyframes doorCloseWidth {
+    0% {
+        width: 7px;
+    }
+
+    100% {
+        width: 0px;
     }
 }
 
 .buildings-visual {
     &__container {
         &__horizon-house-g {
-            &__base, &__roof, &__chimney {
+
+            &__base,
+            &__roof,
+            &__chimney {
                 fill: var(--body-background-color);
+            }
+
+            &__window,
+            &__door {
+                stroke-width: 1px;
+                stroke: rgba(255, 227, 104, 0.2);
+                fill: rgba(255, 227, 104, 0.6);
             }
 
             &__window {
                 opacity: 0;
-                stroke-width: 1px;
-                stroke: rgba(255, 227, 104, 0.2);
-                fill: rgba(255, 227, 104, 0.6);
 
                 &--lights-on {
-                  animation: fadeInWindowOpacity 1s ease-in-out var(--transition-speed-fast) forwards;
+                    animation: fadeInWindowOpacity 1s ease-in-out var(--transition-speed-fast) forwards;
+                }
+
+                &--lights-off {
+                    opacity: 1;
+                    animation: fadeOutWindowOpacity 1s ease-in-out var(--transition-speed-fast) forwards;
+                }
+            }
+
+            &__door {
+                &--lights-on {
+                    animation: doorOpenWidth var(--transition-speed-slow) ease-in-out var(--transition-speed-fast) forwards;
+                }
+
+                &--lights-off {
+                    width: 7px;
+                    animation: doorCloseWidth var(--transition-speed-slow) ease-in-out var(--transition-speed-fast) forwards;
                 }
             }
 
@@ -32,7 +91,7 @@
                 pointer-events: all;
                 cursor: pointer;
                 stroke-width: 2px;
-                fill: rgba(255, 0,0, 0);
+                fill: rgba(255, 0, 0, 0);
                 fill: transparent;
             }
         }

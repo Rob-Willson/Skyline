@@ -11,5 +11,9 @@ export const BuildingsVisualClasses = {
     horizonHouseChimney: `${horizonHouseGroup}__chimney`,
     horizonHouseWindow: `${horizonHouseGroup}__window`,
     horizonHouseWindowLightsOn: `${horizonHouseGroup}__window--lights-on`,
+    horizonHouseWindowLightsOff: `${horizonHouseGroup}__window--lights-off`,
+    horizonHouseDoor: `${horizonHouseGroup}__door`,
+    horizonHouseDoorLightsOn: `${horizonHouseGroup}__door--lights-on`,
+    horizonHouseDoorLightsOff: `${horizonHouseGroup}__door--lights-off`,
     horizonHouseGroupInteract: `${horizonHouseGroup}__interact`,
 };

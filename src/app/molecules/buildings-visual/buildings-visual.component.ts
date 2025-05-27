@@ -29,7 +29,10 @@ export class BuildingsVisualComponent extends BaseVisualDirective<void> {
     private svg!: any;
     private horizonHouse!: any;
     private horizonHouseWindow!: any;
+    private horizonHouseDoor!: any;
+
     private lightsOn: boolean = false;
+    private doorOpen: boolean = false;
 
     protected override validateExternalData(_: void): boolean {
         return true;
@@ -72,13 +75,21 @@ export class BuildingsVisualComponent extends BaseVisualDirective<void> {
             .attr('height', 7)
             .attr('transform', 'translate(6, 4)');
 
+        this.horizonHouseDoor = this.horizonHouse
+            .append('rect')
+            .attr('class', BuildingsVisualClasses.horizonHouseDoor)
+            .attr('height', 18)
+            .attr('transform', 'translate(24, 2)');
+
         this.horizonHouse
             .append('rect')
             .attr('class', BuildingsVisualClasses.horizonHouseGroupInteract)
             .attr('width', 50)
             .attr('height', 52)
             .attr('transform', 'translate(-5 -28)')
-            .on('click', () => this.toggleLights());
+            .on('mouseover', () => this.setLights(true))
+            .on('mouseout', () => this.setLights(false))
+            .on('click', () => this.toggleDoor());
     }
 
     protected override update(): void {
@@ -101,9 +112,24 @@ export class BuildingsVisualComponent extends BaseVisualDirective<void> {
         return Math.sqrt(Math.pow(this.width, 2) + Math.pow(this.height, 2));
     }
 
-    private toggleLights(): void {
-        this.lightsOn = !this.lightsOn;
+    private setLights(value: boolean): void {
+        if (this.doorOpen) {
+            return;
+        }
+
+        this.lightsOn = value;
         this.horizonHouseWindow.classed(BuildingsVisualClasses.horizonHouseWindowLightsOn, this.lightsOn);
-        this.lightToggleEvent.emit(this.lightsOn);
+        this.horizonHouseWindow.classed(BuildingsVisualClasses.horizonHouseWindowLightsOff, !this.lightsOn);
+    }
+
+    private toggleDoor(): void {
+        this.doorOpen = !this.doorOpen;
+        this.horizonHouseDoor.classed(BuildingsVisualClasses.horizonHouseDoorLightsOn, this.doorOpen);
+        this.horizonHouseDoor.classed(BuildingsVisualClasses.horizonHouseDoorLightsOff, !this.doorOpen);
+        this.lightToggleEvent.emit(this.doorOpen);
+
+        if (this.doorOpen) {
+            this.setLights(true);
+        }
     }
 }
