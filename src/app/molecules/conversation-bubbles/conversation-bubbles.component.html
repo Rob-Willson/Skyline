@@ -1,7 +1,7 @@
 <div #containerElement class="conversation-bubbles__container">
     <div class="conversation-bubbles__container__output">
         <div class="conversation-bubbles__container__output__text">
-            {{data?.lastSelection?.output ?? ''}}
+            {{data.lastSelection?.output ?? ''}}
         </div>
     </div>
 
@@ -16,7 +16,7 @@
                 [label]="case.input"
                 [ariaLabel]="case.input"
                 [hideLabel]="false"
-                [disabled]="case.input === data?.lastSelection?.input"
+                [disabled]="case.input === data.lastSelection?.input"
                 [hideBorder]="false"
                 (buttonClicked)="onSelect(case)"
                 class="conversation-bubbles__container__bubble-wrapper__bubble"
