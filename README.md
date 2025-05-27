@@ -37,3 +37,16 @@ http://localhost:4200
 ```
 
 The app will automatically reload when you make changes to source files.
+
+
+## How to Update Demo on GitHub Pages
+
+1. Make production build:
+```bash
+ng build --configuration production
+```
+
+2. Deploy to GitHub Pages:
+```bash
+npx angular-cli-ghpages --dir=dist/skyline-app/browser
+```
