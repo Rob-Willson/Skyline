@@ -19,10 +19,21 @@
 
             &__window {
                 opacity: 0;
-                animation: fadeInWindowOpacity 1s ease-in-out 5s forwards;
-                fill: rgba(255, 227, 104, 0.6);
                 stroke-width: 1px;
                 stroke: rgba(255, 227, 104, 0.2);
+                fill: rgba(255, 227, 104, 0.6);
+
+                &--lights-on {
+                  animation: fadeInWindowOpacity 1s ease-in-out var(--transition-speed-fast) forwards;
+                }
+            }
+
+            &__interact {
+                pointer-events: all;
+                cursor: pointer;
+                stroke-width: 2px;
+                fill: rgba(255, 0,0, 0);
+                fill: transparent;
             }
         }
     }

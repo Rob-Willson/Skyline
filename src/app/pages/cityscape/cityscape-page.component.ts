@@ -14,11 +14,12 @@ import { ConversationService } from '../../services/conversation.service';
 import { OverlayService } from '../../services/overlay.service';
 import { OptionsMenuComponent } from '../../organisms/options-menu/options-menu.component';
 import { Overlay } from '@angular/cdk/overlay';
+import { NgIf } from '@angular/common';
 
 @Component({
     selector: 'cityscape-page',
     standalone: true,
-    imports: [SkyVisualComponent, BuildingsVisualComponent, ConversationBubblesComponent],
+    imports: [SkyVisualComponent, BuildingsVisualComponent, ConversationBubblesComponent, NgIf],
     templateUrl: './cityscape-page.component.html',
     styleUrl: './cityscape-page.component.scss',
     changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,8 +82,8 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
         console.log("onSubmit...", this.form.value);
     }
 
-    // TODO: this is not currently called, but should be when the form is reset
     public onReset(): void {
+        console.log(this.conversationState);
         const defaultValues = this.formConfig.reduce((acc, item) => {
             acc[item.formControlName] = item.defaultValue;
             return acc;
@@ -91,8 +92,18 @@ export class CityscapePageComponent extends BasePageDirective implements OnInit,
         this.form.reset(defaultValues);
     }
 
-    public onConversationSelect(data: ConversationCase): void {
-        this.conversationService.update(data);
+    public toggleConversationDisplay(doShow: boolean): void {
+        if (doShow) {
+            this.conversationService.start();
+            this.getConversationData();
+        } else {
+            this.conversationService.end();
+            this.getConversationData();
+        }
+    }
+
+    public onConversationSelect(selectedCase: ConversationCase): void {
+        this.conversationService.update(selectedCase);
         this.getConversationData();
     }
 

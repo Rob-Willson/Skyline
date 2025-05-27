@@ -1,7 +1,9 @@
 import {
     ChangeDetectionStrategy,
     Component,
+    EventEmitter,
     Input,
+    Output,
     ViewEncapsulation,
 } from '@angular/core';
 import { BaseVisualDirective } from '../base-visual/base-visual.directive';
@@ -21,8 +23,13 @@ export class BuildingsVisualComponent extends BaseVisualDirective<void> {
     @Input({required: true})
     public horizonPositionFraction!: number;
 
+    @Output()
+    public lightToggleEvent: EventEmitter<boolean> = new EventEmitter(false);
+
     private svg!: any;
     private horizonHouse!: any;
+    private horizonHouseWindow!: any;
+    private lightsOn: boolean = false;
 
     protected override validateExternalData(_: void): boolean {
         return true;
@@ -58,13 +65,21 @@ export class BuildingsVisualComponent extends BaseVisualDirective<void> {
             .attr('height', 20)
             .attr('transform', 'translate(28, -20)');
 
-        this.horizonHouse
+        this.horizonHouseWindow = this.horizonHouse
             .append('rect')
             .attr('class', BuildingsVisualClasses.horizonHouseWindow)
             .attr('width', 7)
             .attr('height', 7)
             .attr('transform', 'translate(6, 4)');
-}
+
+        this.horizonHouse
+            .append('rect')
+            .attr('class', BuildingsVisualClasses.horizonHouseGroupInteract)
+            .attr('width', 50)
+            .attr('height', 52)
+            .attr('transform', 'translate(-5 -28)')
+            .on('click', () => this.toggleLights());
+    }
 
     protected override update(): void {
         const maxDimension = this.getMaxDimension();
@@ -84,5 +99,11 @@ export class BuildingsVisualComponent extends BaseVisualDirective<void> {
 
     private getMaxDimension(): number {
         return Math.sqrt(Math.pow(this.width, 2) + Math.pow(this.height, 2));
+    }
+
+    private toggleLights(): void {
+        this.lightsOn = !this.lightsOn;
+        this.horizonHouseWindow.classed(BuildingsVisualClasses.horizonHouseWindowLightsOn, this.lightsOn);
+        this.lightToggleEvent.emit(this.lightsOn);
     }
 }

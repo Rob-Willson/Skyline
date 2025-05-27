@@ -1,10 +1,11 @@
 export interface ConversationCase {
-    input: string;
-    output: string;
-    goToStateId: string;
+    readonly input: string;
+    readonly output: string;
+    readonly goToStateId: string | undefined;
 }
 
 export interface ConversationState {
-    id: string;
-    cases: ConversationCase[];
+    readonly id: string;
+    readonly cases: ReadonlyArray<ConversationCase>;
+    lastSelection?: ConversationCase;
 }

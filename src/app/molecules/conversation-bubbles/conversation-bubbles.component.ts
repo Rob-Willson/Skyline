@@ -18,8 +18,6 @@ export class ConversationBubblesComponent extends BaseVisualDirective<Conversati
     @Output()
     public select: EventEmitter<ConversationCase> = new EventEmitter();
 
-    public lastSelection?: ConversationCase = undefined;
-
     private svg!: any;
     private defs!: any;
     private defsClipPathRect!: any;
@@ -28,7 +26,6 @@ export class ConversationBubblesComponent extends BaseVisualDirective<Conversati
 
     public onSelect(selectedCase: ConversationCase): void {
         this.select.emit(selectedCase);
-        this.lastSelection = selectedCase;
     }
 
     public getBubbleYOffset(i: number): { [key: string]: string } {
@@ -48,7 +45,7 @@ export class ConversationBubblesComponent extends BaseVisualDirective<Conversati
     }
 
     protected override validateExternalData(data: ConversationState): boolean {
-        return data.cases?.length > 0;
+        return data?.cases?.length > 0;
     }
 
     protected initialise(): void {
@@ -87,9 +84,7 @@ export class ConversationBubblesComponent extends BaseVisualDirective<Conversati
             .append('rect');
     }
 
-    private generateSvgElements(): void {
-
-    }
+    private generateSvgElements(): void {}
 
     private getMaxDimension = (): number => {
         return Math.sqrt(Math.pow(this.width, 2) + Math.pow(this.height, 2));

@@ -1,13 +1,13 @@
 <div #containerElement class="conversation-bubbles__container">
     <div class="conversation-bubbles__container__output">
         <div class="conversation-bubbles__container__output__text">
-            {{lastSelection?.output ?? ''}}
+            {{data?.lastSelection?.output ?? ''}}
         </div>
     </div>
 
     <div class="conversation-bubbles__container__inputs">
         <div
-            *ngFor="let case of data.cases; let i = index"
+            *ngFor="let case of data?.cases; let i = index"
             [class.conversation-bubbles__container__inputs__bubble-wrapper--]
             class="conversation-bubbles__container__inputs__bubble-wrapper"
             [ngStyle]="getBubbleYOffset(i)"
@@ -16,7 +16,7 @@
                 [label]="case.input"
                 [ariaLabel]="case.input"
                 [hideLabel]="false"
-                [disabled]="case.input === lastSelection?.input"
+                [disabled]="case.input === data?.lastSelection?.input"
                 [hideBorder]="false"
                 (buttonClicked)="onSelect(case)"
                 class="conversation-bubbles__container__bubble-wrapper__bubble"
